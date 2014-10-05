@@ -58,7 +58,7 @@ $(function() {
     });
 
     $(".msg-success").on("click", ".ir-mp", function() {
-        window.location = url;
+        post();
     });
 
     function exibeMensagemErro(status, mensagem) {

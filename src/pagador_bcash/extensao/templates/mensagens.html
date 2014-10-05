@@ -1,10 +1,23 @@
 
-<div class="koin-mensagem alert-message alert-message-warning">
+<div class="bcash-mensagem alert-message alert-message-warning">
     <div class="msg-warning">
-        <p><img src="https://www.koin.com.br/resources/images/logo-header.png"></p>
-        <div id="aguarde">
-            <h3>POR FAVOR AGUARDE, ANALISANDO DADOS</h3>
-            <div class="content">
+        <p><img src="https://a248.e.akamai.net/f/248/96284/168h/www.bcash.com.br/webroot/banners/site/cs90x95px.png"></p>
+        <div class="content">
+            <div id="redirecting" style="display: none;">
+                <h3>REDIRECIONANDO</h3>
+                <p class="lead">
+                    Você será redicionado para o PagSeguro em <span class="segundos" style="margin: 0; font-weight: bold;">5</span> segundos ou se preferir, <a href="#" class="ir-mp cor-secundaria">clique aqui</a>.
+                </p>
+
+                <form action="https://www.pagamentodigital.com.br/checkout/pay/" method="post" id="enviarPagamento"></form>
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </div>
+            <div id="aguarde">
+                <h3>POR FAVOR AGUARDE, ANALISANDO DADOS</h3>
                 <div class="spinner">
                     <div class="bounce1"></div>
                     <div class="bounce2"></div>
@@ -12,39 +25,33 @@
                 </div>
             </div>
         </div>
-        <div id="jaProcessado" style="display: none;">
-            <h3>PEDIDO JÁ PROCESSADO</h3>
-            <div class="content">
-                <p class="lead">Esse pedido já foi processado: <span class="situacao-pedido" style="font-weight: bold;"></span></p>
-            </div>
-        </div>
     </div>
     <div class="msg-success">
-        <p><img src="https://www.koin.com.br/resources/images/logo-header.png"></p>
+        <p><img src="https://a248.e.akamai.net/f/248/96284/168h/www.bcash.com.br/webroot/banners/site/cs90x95px.png"></p>
         <div class="content">
-            <div id="successMessage" >
-                <h3>SEU PEDIDO FOI RECEBIDO COM SUCESSO!</h3>
+            <div id="successMessage" style="display: none;">
+                <h3>SUCESSO</h3>
                 <p class="lead">
-                    Você receberá um e-mail de confirmação com detalhes do pedido e informações sobre o pagamento com Koin Pós-Pago.
+                    Seu pagamento foi aprovado com sucesso! Obrigado por comprar em nossa loja.
                 </p>
             </div>
-            <div id="jaPago" style="display: none;">
-                <h3>PEDIDO PAGO</h3>
+            <div id="pendingMessage" style="display: none;">
+                <h3>EM ANÁLISE</h3>
                 <p class="lead">
-                    Seu pagamento já foi efetuado com sucesso!
+                    O PagSeguro está analisando seu pedido ou aguardando que o mesmo seja pago. Você será informado sempre através do seu email.
                 </p>
             </div>
         </div>
     </div>
     <div class="msg-danger">
-        <p><img src="https://www.koin.com.br/resources/images/logo-header.png"></p>
+        <p><img src="https://a248.e.akamai.net/f/248/96284/168h/www.bcash.com.br/webroot/banners/site/cs90x95px.png"></p>
         <div class="content">
-            <h3>SEU COMPRA NÃO FOI APROVADA</h3>
+            <h3>PAGAMENTO NÃO EFETUADO</h3>
             <p class="lead">
-                Infelizmente sua compra não foi aprovada.
+                Seu pagamento não foi concluído. Para tentar novamente clique no botão abaixo:
             </p>
             <p class="lead">
-                <a class="href-koin" href="http://www.koin.com.br/home/atendimento" target="_blank">Entre em contato com a Koin</a> para mais informações.
+                <button type="button" class="botao principal pagar">Efetuar pagamento</button>
             </p>
             <p>
                 <code id="errorMessage">500: NAO FOI POSSIVEL PROCESSAR POR FALTA DE CRÉDITO</code>

@@ -1,172 +1,100 @@
 # -*- coding: utf-8 -*-
 import json
+from urllib import urlencode
+from hashlib import md5
+
+from pagador import settings
+from pagador.envio.models import SituacaoPedido
 from pagador.envio.requisicao import Enviar
-from pagador.retorno.models import SituacaoPedido
-from pagador_koin import settings
-from pagador_koin.extensao.envio import Pedido, Comprador, DocumentoDeComprador, Telefone, Endereco, FormaEnvio, Item
-
-
-MENSAGENS_RETORNO = {
-    "0": u"Código de retorno inválido",
-    "200": u"Compra aprovada pela Koin.",
-    "301": u"Código de verificação de fraude não informado",
-    "302": u"A análise / verificação de risco não autorizou o processamento desta operação",
-    "304": u"A análise / verificação de risco não autorizou o processamento desta operação",
-    "500": u"Houve um erro ao processar sua compra com Koin. Por favor, tente novamente.",
-    "501": u"Não foi possível identificar esta loja. Por favor, tente novamente ou entre em contato com o responsável pela loja.",
-    "502": u"Por favor, verifique o endereço de entrega informado. Ele deve ser igual ao utilizado em sua conta Koin.",
-    "503": u"Por favor, verifique o E-mail informado. Ele precisa ser o mesmo utilizado em sua conta Koin.",
-    "504": u"Por favor, verifique o telefone informado. Ele precisa ser o mesmo utilizado em sua conta Koin.",
-    "505": u"Não foi possível processar o seu pedido devido a uma pendência em seu cadastro Koin. Entre em contato com a Koin para maiores informações.",
-    "506": u"Não foi possível processar a sua compra devido a uma pendência em seu cadastro, por gentileza, contate o vendedor.",
-    "507": u"Não foi possível localizar o seu endereço de entrega, verifique o CEP informado e tente novamente.",
-    "508": u"Esta loja não está credenciada para processar pagamentos com Koin. Por favor, contate o vendedor.",
-    "509": u"Ocorreu um erro em seu cadastro. Favor entrar em contato com a Koin.",
-    "510": u"Não foi possível localizar o seu endereço de entrega. Verifique o CEP informado e tente novamente.",
-    "511": u"Essa transação já foi enviada para o Koin anteriormente.",
-    "601": u"O valor do seu pedido precisa ser maior do que zero. Verifique o carrinho de compras e tente novamente.",
-    "602": u"Não encontramos nenhum produto no carrinho de compras. Por favor, tente novamente.",
-    "603": u"O número do seu pedido não é valido. por gentileza, contate o vendedor e tente novamente.",
-    "604": u"O código do produto está incorreto. Contate o vendedor e tente novamente.",
-    "605": u"Por gentileza, informe o valor do produto.",
-    "606": u"Por gentileza, informe a quantidade do produto.",
-    "701": u"O seu pedido não poderá ser processado, pois o valor dele excede o seu limite de compras com Koin. Entre em contato com a Koin para maiores informações.",
-    "702": u"O limite de vendas da loja foi atingido. Por gentileza, contate o vendedor.",
-    "998": u"O pedido {} já foi utilizado no processamento de outra transação.",
-    "999": u"Existe um erro nos dados informados. Verifique-os e tente novamente.",
-}
+from pagador_bcash.extensao.envio import Checkout
+from pagador_bcash.extensao.seguranca import ParametrosBcash
 
 
 class EnviarPedido(Enviar):
     def __init__(self, pedido, dados, configuracao_pagamento):
         super(EnviarPedido, self).__init__(pedido, dados, configuracao_pagamento)
-        self._comprador_telefones = []
-        self.exige_autenticacao = True
+        self.exige_autenticacao = False
         self.processa_resposta = True
-        self.url = settings.REQUEST_URL
+        self.url = None
         self.grava_identificador = False
         self.envio_por_querystring = False
+        for item in range(0, len(self.pedido.itens.all())):
+            Checkout.cria_item_venda(item)
 
     @property
     def chaves_credenciamento(self):
-        return ["token", "senha"]
+        return ["usuario", "token"]
 
     def gerar_dados_de_envio(self):
-        pedido_envio = Pedido(
-            fraud_id=self.dados["fraud_id"],
-            reference="{:03d}".format(self.pedido.numero),
-            currency="BRL",
-            request_date=self.formatador.formata_data(self.pedido.data_criacao),
-            price=self.formatador.formata_decimal(self.pedido.valor_total),
-            is_gift=False,
-            payment_type=21,
-            buyer=Comprador(
-                name=self.pedido.cliente.nome,
-                ip=self.dados["ip"],
-                is_first_purchase=self.pedido.cliente.eh_primeira_compra_na_loja,
-                is_reliable=self.pedido.cliente.eh_confiavel,
-                buyer_type=self.tipo(),
-                email=self.pedido.cliente.email,
-                documents=[self.documento_de_comprador],
-                additional_info=[self.informacao_adicional_de_comprador],
-                phones=self.telefones,
-                address=Endereco(
-                    city=self.pedido.cliente.endereco.cidade,
-                    state=self.pedido.cliente.endereco.estado,
-                    country=self.pedido.cliente.endereco.pais.nome,
-                    district=self.pedido.cliente.endereco.bairro,
-                    street=self.pedido.cliente.endereco.endereco,
-                    number=self.pedido.cliente.endereco.numero,
-                    complement=self.pedido.cliente.endereco.complemento,
-                    zip_code=self.pedido.cliente.endereco.cep,
-                    address_type=self.tipo()
-                )
-            ),
-            shipping=FormaEnvio(
-                price=self.formatador.formata_decimal(self.pedido.valor_envio),
-                delivery_date=self.formatador.formata_data(self.pedido.provavel_data_entrega),
-                shipping_type=1,
-                address=Endereco(
-                    city=self.pedido.endereco_entrega.cidade,
-                    state=self.pedido.endereco_entrega.estado,
-                    country=self.pedido.endereco_entrega.pais,
-                    district=self.pedido.endereco_entrega.bairro,
-                    street=self.pedido.endereco_entrega.endereco,
-                    number=self.pedido.endereco_entrega.numero,
-                    complement=self.pedido.endereco_entrega.complemento,
-                    zip_code=self.pedido.endereco_entrega.cep,
-                    address_type=self.tipo(self.pedido.endereco_entrega.tipo)
-                )
-            ),
-            items=self.items,
+        parametros = ParametrosBcash("bcash", id=self.pedido.conta.id)
+        checkout = Checkout(
+            id_plataforma=parametros.id_plataforma,
+            tipo_integracao='PAD',
+            email_loja=self.configuracao_pagamento.usuario,
+            id_pedido=self.pedido.id,
+            email=self.pedido.cliente.email,
+            url_retorno="{}/success?next_url={}&referencia={}".format(settings.BCASH_NOTIFICATION_URL, self.dados["next_url"], self.pedido.numero),
+            redirect='true',
+            redirect_time=30,
+            frete=self.formatador.formata_decimal(self.pedido.valor_envio),
+            tipo_frete=self.pedido.pedido_envio.envio.nome,
+            nome=(self.pedido.endereco_entrega.nome or self.pedido.cliente.email),
+            telefone=self.pedido.telefone_principal,
+            celular=self.pedido.telefone_celular,
+            cep=self.pedido.endereco_entrega.cep,
+            endereco='{}, {}'.format(self.pedido.endereco_entrega.endereco, self.pedido.endereco_entrega.numero),
+            complemento=self.pedido.endereco_entrega.complemento,
+            bairro=self.pedido.endereco_entrega.bairro,
+            cidade=self.pedido.endereco_entrega.cidade,
+            estado=self.pedido.endereco_entrega.estado,
+            desconto=self.formatador.formata_decimal(self.pedido.valor_desconto)
         )
-        return pedido_envio.to_dict()
 
-    def tipo(self, tipo=None):
-        if not tipo:
-            tipo = self.pedido.cliente.endereco.tipo
-        tipos = {'PF': 1, 'PJ': 2}
-        return tipos[tipo]
+        if self.pedido.endereco_entrega.tipo == 'PF':
+            checkout.define_valor_de_atributo("cpf", {"cpf": self.pedido.endereco_entrega.cpf})
+            checkout.define_valor_de_atributo("rg", {"rg": self.pedido.endereco_entrega.rg})
+            checkout.define_valor_de_atributo("sexo", {"sexo": self.pedido.cliente.sexo})
+            if self.pedido.cliente.data_nascimento:
+                data_nascimento = '{}/{}/{}'.format(self.pedido.cliente.data_nascimento.day, self.pedido.cliente.data_nascimento.month, self.pedido.cliente.data_nascimento.year)
+                checkout.define_valor_de_atributo("data_nascimento", {"data_nascimento": data_nascimento})
+        elif self.pedido.endereco_entrega.tipo == 'PJ':
+            checkout.define_valor_de_atributo("cliente_razao_social", {"cliente_razao_social": self.pedido.endereco_entrega.razao_social})
+            checkout.define_valor_de_atributo("cliente_cnpj", {"cliente_cnpj": self.pedido.endereco_entrega.cnpj})
 
-    @property
-    def documento_de_comprador(self):
-        if self.pedido.cliente.endereco.tipo == "PF":
-            return DocumentoDeComprador(key="CPF", value=self.pedido.cliente.endereco.cpf)
-        else:
-            return DocumentoDeComprador(key="CNPJ", value=self.pedido.cliente.endereco.cnpj)
+        for indice, item in enumerate(self.pedido.itens.all()):
+            self.define_valor_de_atributo_de_item(checkout, "codigo", indice, item.sku[:100])
+            self.define_valor_de_atributo_de_item(checkout, "descricao", indice, item.nome[:255])
+            self.define_valor_de_atributo_de_item(checkout, "qtde", indice, self.formatador.formata_decimal(item.quantidade, como_int=True))
+            self.define_valor_de_atributo_de_item(checkout, "valor", indice, self.formatador.formata_decimal(item.preco_venda))
 
-    @property
-    def informacao_adicional_de_comprador(self):
-        if self.pedido.cliente.endereco.tipo == "PF":
-            return DocumentoDeComprador(key="Birthday", value=self.formatador.formata_data(self.pedido.cliente.data_nascimento, hora=False))
-        else:
-            return DocumentoDeComprador(key="RazaoSocial", value=self.pedido.cliente.endereco.razao_social)
+        hasheado = self.gerar_hash(checkout.to_dict())
+        checkout.define_valor_de_atributo("hash", {"hash": hasheado})
+        return checkout.to_dict()
 
-    @property
-    def telefones(self):
-        if self.pedido.cliente.telefone_principal:
-            numero = self.formatador.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_principal)
-            self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=2))
-        if self.pedido.cliente.telefone_comercial:
-            numero = self.formatador.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_comercial)
-            self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=3))
-        if self.pedido.cliente.telefone_celular:
-            numero = self.formatador.converte_tel_em_tupla_com_ddd(self.pedido.cliente.telefone_celular)
-            self._comprador_telefones.append(Telefone(area_code=numero[0], number=numero[1], phone_type=4))
-        return self._comprador_telefones
-
-    @property
-    def items(self):
-        return [
-            Item(
-                reference=item.sku,
-                description=item.nome,
-                quantity=self.formatador.formata_decimal(item.quantidade),
-                category="Desconhecida",
-                price=self.formatador.formata_decimal(item.preco_venda)
-            )
-            for item in self.pedido.itens.all()
-        ]
+    def define_valor_de_atributo_de_item(self, checkout, atributo, indice, valor):
+        indice += 1
+        nome = "produto_{}_{}".format(atributo, indice)
+        atributo = "produto_{}_{}".format(atributo, indice)
+        checkout.define_valor_de_atributo(nome, {atributo.lower(): valor})
 
     def obter_situacao_do_pedido(self, status_requisicao):
-        if status_requisicao == 200:
-            return SituacaoPedido.SITUACAO_PEDIDO_PAGO
-        if status_requisicao == 403:
-            return SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO
-        if status_requisicao == 998 or status_requisicao == 511:
-            return SituacaoPedido.SITUACAO_PAGTO_EM_ANALISE
-        return SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
+        return SituacaoPedido.SITUACAO_PEDIDO_EFETUADO
 
     def processar_resposta(self, resposta):
-        if resposta.status_code == 403:
-            return {"content": u"Autenticação da loja com a Koin Falhou. Contate o SAC da loja.", "status": resposta.status_code}
-        if resposta.status_code != 200:
-            return {"content": resposta.content, "status": resposta.status_code}
-        content = json.loads(resposta.content)
-        code = content.get("Code", 0)
-        if code == 200:
-            return {"content": content.get("Message", "Compra aprovada pela Koin."), "status": resposta.status_code}
-        mensagem = content.get("Message", None)
-        if not mensagem:
-            mensagem = MENSAGENS_RETORNO[str(code)]
-        return {"content": mensagem, "status": int(code)}
+        return {"content": {"dados": self.gerar_dados_de_envio()}, "status": 200}
+
+    def gerar_hash(self, valores_formulario):
+        em_ordem = [(k, valores_formulario[k]) for k in sorted(valores_formulario.keys())]
+        codificado = []
+        for k, v in em_ordem:
+            if isinstance(v, unicode):
+                v = v.encode('utf-8')
+            if isinstance(k, unicode):
+                k = k.encode('utf-8')
+            codificado.append((k, v))
+        if self.configuracao_pagamento.token:
+            token = self.configuracao_pagamento.token.strip()
+        else:
+            token = ''
+        tudo = "%s%s" % (urlencode(codificado), token)
+        return md5(tudo).hexdigest()

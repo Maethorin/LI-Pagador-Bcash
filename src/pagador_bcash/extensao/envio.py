@@ -3,72 +3,18 @@
 from pagador.envio.serializacao import EntidadeSerializavel, Atributo
 
 
-class Pedido(EntidadeSerializavel):
-    _atributos = ["FraudId", "Reference", "Currency", "RequestDate",
-                  "Price", "DiscountPercent", "DiscountValue", "IncreasePercent", "IncreaseValue",
-                  "IsGift", "PaymentType", "Buyer", "Shipping", "Items"]
-    atributos = [
-        Atributo(atributo, eh_serializavel=(atributo == "Buyer" or atributo == "Shipping"), eh_lista=(atributo == "Items"))
-        for atributo in _atributos
-    ]
+teste = {'tipo_frete': u'SEDEX', 'data_nascimento': '12/3/1978', 'celular': u'11999999999', 'id_plataforma': 519, 'complemento': u'2 andar', 'tipo_integracao': 'PAD', 'nome': u'Teste Loja Integrada', 'frete': '14.00', 'rg': u'111111111-1', 'email_loja': u'marcio.duarte@lojaintegrada.com.br', 'email': u'marcio.duarte+testeloja@lojaintegrada.com.br', 'redirect': 'true', 'produto_descricao_1': u'Lumin\xe1ria Embutir para 2 L\xe2mpadas sem abas', 'hash': 'a640934d9ee86a0282df86627b4c70bc', 'bairro': u'Botafogo', 'url_retorno': 'http://www.custompaper.com.br/bcash/notificacao', 'sexo': u'm', 'redirect_time': 30, 'produto_codigo_1': 574773, 'produto_qtde_1': 1, 'cep': u'22250040', 'estado': u'RJ', 'produto_valor_1': '500.00', 'cidade': u'Rio de Janeiro', 'cpf': u'16055744651', 'id_pedido': 368073, 'endereco': u'Praia de Botafogo, 518'}
 
 
-class Comprador(EntidadeSerializavel):
-    atributos = [
-        Atributo("Name"), Atributo("Ip"), Atributo("IsFirstPurchase"), Atributo("IsReliable"),
-        Atributo("BuyerType"), Atributo("Email"),
-        Atributo("Documents", eh_lista=True),
-        Atributo("Phones", eh_lista=True),
-        Atributo("AdditionalInfo", eh_lista=True),
-        Atributo("Address", eh_serializavel=True)
-    ]
+class Checkout(EntidadeSerializavel):
+    _atributos = ["id_plataforma", "tipo_integracao", "email_loja", "email", "url_retorno", "redirect", "redirect_time", "id_pedido", "frete", "tipo_frete", "cpf", "rg",
+                  "cliente_razao_social", "cliente_cnpj", "data_nascimento", "sexo", "nome", "telefone", "celular", "cep", "endereco", "complemento", "bairro", "cidade", "estado",
+                  "desconto", "hash"]
+    atributos = [Atributo(atributo) for atributo in _atributos]
 
-
-class DocumentoDeComprador(EntidadeSerializavel):
-    atributos = [Atributo("Key"), Atributo("Value")]
-
-
-class InformacoesDeComprador(EntidadeSerializavel):
-    atributos = [Atributo("Key"), Atributo("Value")]
-
-
-class Telefone(EntidadeSerializavel):
-    atributos = [Atributo("AreaCode"), Atributo("Number"), Atributo("PhoneType")]
-
-
-class Endereco(EntidadeSerializavel):
-    atributos = [
-        Atributo("City"),
-        Atributo("State"),
-        Atributo("Country"),
-        Atributo("District"),
-        Atributo("Street"),
-        Atributo("Number"),
-        Atributo("Complement"),
-        Atributo("ZipCode"),
-        Atributo("AddressType")
-    ]
-
-
-class FormaEnvio(EntidadeSerializavel):
-    atributos = [
-        Atributo("Price"),
-        Atributo("DeliveryDate"),
-        Atributo("ShippingType"),
-        Atributo("Address", eh_serializavel=True)
-    ]
-
-
-class Item(EntidadeSerializavel):
-    atributos = [
-        Atributo("Reference"),
-        Atributo("Description"),
-        Atributo("Category"),
-        Atributo("Quantity"),
-        Atributo("Price"),
-        Atributo("Attributes", eh_lista=True)
-    ]
-
-
-class AtributoDeItem(EntidadeSerializavel):
-    atributos = [Atributo("Key"), Atributo("Value")]
+    @classmethod
+    def cria_item_venda(cls, indice):
+        cls.atributos.append(Atributo("produto_codigo_{}".format(indice)))
+        cls.atributos.append(Atributo("produto_descricao_{}".format(indice)))
+        cls.atributos.append(Atributo("produto_qtde_{}".format(indice)))
+        cls.atributos.append(Atributo("produto_valor_{}".format(indice)))

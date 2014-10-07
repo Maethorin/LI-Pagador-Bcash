@@ -46,8 +46,6 @@ class Formulario(FormularioBase):
 
 
 class MeioPagamentoEnvio(object):
-    source_fraud_id = Script(tipo=TipoScript.source, conteudo="//resources.koin.{}.br/scripts/koin.min.js".format("net"))
-
     @property
     def css(self):
         return Script(tipo=TipoScript.css, caminho_arquivo=caminho_do_arquivo_de_template("style.css"))
@@ -63,7 +61,6 @@ class MeioPagamentoEnvio(object):
     def to_dict(self):
         return [
             self.css.to_dict(),
-            self.source_fraud_id.to_dict(),
             self.function_enviar.to_dict(),
             self.mensagens.to_dict()
         ]

@@ -26,7 +26,7 @@ class EnviarPedido(Enviar):
         return ["usuario", "token"]
 
     def gerar_dados_de_envio(self):
-        parametros = ParametrosBcash("bcash", id=self.pedido.conta.id)
+        parametros = ParametrosBcash("bcash", id=self.pedido.conta_id)
         checkout = Checkout(
             id_plataforma=parametros.id_plataforma,
             tipo_integracao='PAD',

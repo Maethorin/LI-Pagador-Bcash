@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, CadastroBase, SelecaoBase, TipoDeCampo
+from pagador.configuracao.cadastro import CampoFormulario, FormularioBase, CadastroBase, SelecaoBase, TipoDeCampo, caminho_para_template
 from pagador.configuracao.cliente import Script, TipoScript
 
 
 def caminho_do_arquivo_de_template(arquivo):
-    diretorio = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(diretorio, "templates", arquivo)
+    return caminho_para_template(arquivo, meio_pagamento='pagamento_digital')
 
 
 class MeioPagamentoCadastro(CadastroBase):

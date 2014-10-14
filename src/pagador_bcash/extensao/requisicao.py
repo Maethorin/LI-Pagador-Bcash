@@ -4,6 +4,7 @@ from urllib import urlencode
 from hashlib import md5
 
 from pagador import settings
+from pagador.acesso.externo import FormatoDeEnvio
 from pagador.envio.models import SituacaoPedido
 from pagador.envio.requisicao import Enviar
 from pagador_bcash.extensao.envio import Checkout
@@ -17,7 +18,7 @@ class EnviarPedido(Enviar):
         self.processa_resposta = True
         self.url = None
         self.grava_identificador = False
-        self.envio_por_querystring = False
+        self.formato_de_envio = FormatoDeEnvio.json
         for item in range(0, len(self.pedido.itens.all())):
             Checkout.cria_item_venda(item)
 

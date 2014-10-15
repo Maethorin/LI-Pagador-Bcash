@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import json
 from urllib import urlencode
 from hashlib import md5
 
 from pagador import settings
 from pagador.acesso.externo import FormatoDeEnvio
-from pagador.envio.models import SituacaoPedido
 from pagador.envio.requisicao import Enviar
 from pagador_bcash.extensao.envio import Checkout
 from pagador_bcash.extensao.seguranca import ParametrosBcash
@@ -79,7 +77,7 @@ class EnviarPedido(Enviar):
         checkout.define_valor_de_atributo(nome, {atributo.lower(): valor})
 
     def obter_situacao_do_pedido(self, status_requisicao):
-        return SituacaoPedido.SITUACAO_PEDIDO_EFETUADO
+        return None
 
     def processar_resposta(self, resposta):
         return {"content": {"dados": self.gerar_dados_de_envio()}, "status": 200}

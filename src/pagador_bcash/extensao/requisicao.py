@@ -35,7 +35,7 @@ class EnviarPedido(Enviar):
             url_retorno="{}/success/?next_url={}&referencia={}".format(settings.BCASH_NOTIFICATION_URL.format(self.pedido.conta_id), self.dados["next_url"], self.pedido.numero),
             redirect='true',
             redirect_time=30,
-            frete=self.formatador.formata_decimal(self.pedido.valor_envio),
+            frete=self.formatador.formata_decimal(self.valor_envio),
             tipo_frete=self.pedido.pedido_envio.envio.nome,
             nome=unicode((self.pedido.endereco_entrega.nome or self.pedido.cliente.email)),
             telefone=self.pedido.telefone_principal,

@@ -14,7 +14,9 @@ class MeioPagamentoCadastro(CadastroBase):
     def descricao_para_lojista(self):
         script = Script(tipo=TipoScript.html, nome="descricao")
         script.adiciona_linha('<p>Conheça <a href="http://bcash.com.br/para-quem-vende/" target="_blank">Bcash</a>!</p>')
-        script.adiciona_linha('<p>A ferramenta completa que faltava para impulsionar as suas vendas na internet com segurança e rapidez.</p>')
+        script.adiciona_linha('<p>Siga os seguintes passos para configurar:</p>')
+        script.adiciona_linha('<p>1. Preencha o campo Seu email no Bcash com seu email de cadastro no Bcash;</p>')
+        script.adiciona_linha('<p>2. Entre no <a href="https://www.bcash.com.br" target="_blank">Bcash</a>, clique em <strong>Ferramentas -> Código de Integração</strong> e copie <strong>Sua Chave acesso</strong> e cole no campo <strong>Sua Chave acesso</strong>.')
         return script
 
     @property
@@ -37,8 +39,8 @@ PARCELAS.insert(0, (0, "Todas"))
 
 
 class Formulario(FormularioBase):
-    usuario = CampoFormulario("usuario", "Seu e-mail no Bcash", requerido=True, tamanho_max=128, ordem=1)
-    token = CampoFormulario("token", "Sua chave de acesso", requerido=True, tamanho_max=128, ordem=2)
+    usuario = CampoFormulario("usuario", "Seu email no Bcash", requerido=True, tamanho_max=128, ordem=1)
+    token = CampoFormulario("token", "Sua chave acesso", requerido=True, tamanho_max=128, ordem=2)
     mostrar_parcelamento = CampoFormulario("mostrar_parcelamento", "Marque para mostrar o parcelamento na listagem dos produtos e na página do produto.", tipo=TipoDeCampo.boleano, requerido=False, ordem=3)
     maximo_parcelas = CampoFormulario("maximo_parcelas", "Máximo de parcelas", tipo=TipoDeCampo.escolha, requerido=False, ordem=4, texto_ajuda=u"Quantidade máxima de parcelas para esta forma de pagamento.", opcoes=PARCELAS)
     parcelas_sem_juros = CampoFormulario("parcelas_sem_juros", "Parcelas sem juros", tipo=TipoDeCampo.escolha, requerido=False, ordem=5, texto_ajuda=u"Número de parcelas sem juros para esta forma de pagamento.", opcoes=PARCELAS)

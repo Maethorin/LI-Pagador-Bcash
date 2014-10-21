@@ -1,5 +1,5 @@
 {% load filters %}
-{% if modo == "padrao_novo" %}
+{% if modo == "padrao-novo" %}
     <li class="pagamento lista-item" id="pagamento_2" data-id="2" data-nome="Bcash!">
         <div class="radio_button">
             <input class="forma_pagamento" type="radio" value="2" name="forma_pagamento" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} />

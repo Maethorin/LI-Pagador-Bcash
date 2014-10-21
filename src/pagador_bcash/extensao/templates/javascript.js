@@ -41,6 +41,13 @@ $(function() {
                     iniciaContador();
                     setTimeout('post();', 5000);
                 }
+                else if (data.status == 404) {
+                    var fatal = false;
+                    if (data.content.hasOwnProperty("fatal")) {
+                        fatal = data.content.fatal;
+                    }
+                    exibeMensagemErro(data.status, data.content.mensagem, fatal);
+                }
                 else {
                     if (data.status == 400 || data.status == 401) {
                         console.log(data.content.mensagem);
@@ -66,12 +73,16 @@ $(function() {
         post();
     });
 
-    function exibeMensagemErro(status, mensagem) {
+    function exibeMensagemErro(status, mensagem, fatal) {
         $bcashMensagem.find(".msg-warning").hide();
         $bcashMensagem.toggleClass("alert-message-warning alert-message-danger");
         var $errorMessage = $("#errorMessage");
         $errorMessage.text(status + ": " + mensagem);
         $bcashMensagem.find(".msg-danger").show();
+        if (fatal) {
+            $(".pagar").remove();
+            $(".click").remove();
+        }
     }
 
     function exibeMensagemSucesso(situacao) {

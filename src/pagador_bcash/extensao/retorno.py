@@ -41,7 +41,7 @@ class Registro(RegistroBase):
         return None
 
     @property
-    def grava_identificador(self):
+    def deve_gravar_dados_de_pagamento(self):
         return True
 
     def __getattr__(self, name):

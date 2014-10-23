@@ -15,7 +15,7 @@ class EnviarPedido(Enviar):
         self.exige_autenticacao = False
         self.processa_resposta = True
         self.url = None
-        self.grava_identificador = False
+        self.deve_gravar_dados_de_pagamento = False
         self.formato_de_envio = FormatoDeEnvio.json
         for item in range(0, len(self.pedido.itens.all())):
             Checkout.cria_item_venda(item)

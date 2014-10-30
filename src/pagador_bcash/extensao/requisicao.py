@@ -24,7 +24,7 @@ class EnviarPedido(Enviar):
     def chaves_credenciamento(self):
         return ["usuario", "token"]
 
-    def gerar_dados_de_envio(self):
+    def gerar_dados_de_envio(self, passo=None):
         parametros = ParametrosBcash("bcash", id=self.pedido.conta_id)
         checkout = Checkout(
             id_plataforma=parametros.id_plataforma,

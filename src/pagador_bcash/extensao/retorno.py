@@ -60,11 +60,11 @@ class Registro(RegistroBase):
             return SituacaoPedido.SITUACAO_PEDIDO_PAGO
         if self.situacao_cancelado:
             return SituacaoPedido.SITUACAO_PEDIDO_CANCELADO
-        return SituacaoPedido.SITUACAO_PEDIDO_EFETUADO
+        return None
 
     @property
     def alterar_situacao(self):
-        return True
+        return self.situacao_do_pedido is not None
 
     @property
     def retorno_de_requisicao(self):
@@ -80,7 +80,7 @@ class Registro(RegistroBase):
 
     @property
     def redireciona_para(self):
-        if "next_url" in self.dados:
+        if self.retorno_de_requisicao:
             tipo = self.tipo
             if self.situacao_aguardando:
                 tipo = 'pending'

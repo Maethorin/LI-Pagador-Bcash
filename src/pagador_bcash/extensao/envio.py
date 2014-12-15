@@ -14,6 +14,7 @@ class Checkout(EntidadeSerializavel):
 
     @classmethod
     def cria_item_venda(cls, indice):
+        indice += 1
         cls.atributos.append(Atributo("produto_codigo_{}".format(indice)))
         cls.atributos.append(Atributo("produto_descricao_{}".format(indice)))
         cls.atributos.append(Atributo("produto_qtde_{}".format(indice)))

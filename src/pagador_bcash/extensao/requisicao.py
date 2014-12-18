@@ -37,16 +37,16 @@ class EnviarPedido(Enviar):
             redirect_time=30,
             frete=self.formatador.formata_decimal(self.valor_envio),
             tipo_frete=self.pedido.pedido_envio.envio.nome,
-            nome=unicode((self.pedido.endereco_entrega.nome or self.pedido.cliente.email)),
+            nome=self.formatador.trata_unicode_com_limite((self.pedido.endereco_entrega.nome or self.pedido.cliente.email)),
             telefone=self.pedido.telefone_principal,
             celular=self.pedido.telefone_celular,
             cep=self.pedido.endereco_entrega.cep,
             endereco=u'{}, {}'.format(self.pedido.endereco_entrega.endereco, self.pedido.endereco_entrega.numero),
-            complemento=unicode(self.pedido.endereco_entrega.complemento),
-            bairro=unicode(self.pedido.endereco_entrega.bairro),
-            cidade=unicode(self.pedido.endereco_entrega.cidade),
+            complemento=self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.complemento),
+            bairro=self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.bairro),
+            cidade=self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.cidade),
             estado=self.pedido.endereco_entrega.estado,
-            desconto=self.formatador.formata_decimal(self.pedido.valor_desconto)
+            desconto=self.formatador.formata_decimal(self.valor_desconto)
         )
 
         if self.pedido.endereco_entrega.tipo == 'PF':
@@ -57,12 +57,12 @@ class EnviarPedido(Enviar):
                 data_nascimento = '{}/{}/{}'.format(self.pedido.cliente.data_nascimento.day, self.pedido.cliente.data_nascimento.month, self.pedido.cliente.data_nascimento.year)
                 checkout.define_valor_de_atributo("data_nascimento", {"data_nascimento": data_nascimento})
         elif self.pedido.endereco_entrega.tipo == 'PJ':
-            checkout.define_valor_de_atributo("cliente_razao_social", {"cliente_razao_social": unicode(self.pedido.endereco_entrega.razao_social)})
+            checkout.define_valor_de_atributo("cliente_razao_social", {"cliente_razao_social": self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.razao_social)})
             checkout.define_valor_de_atributo("cliente_cnpj", {"cliente_cnpj": self.pedido.endereco_entrega.cnpj})
 
         for indice, item in enumerate(self.pedido.itens.all()):
-            self.define_valor_de_atributo_de_item(checkout, "codigo", indice, unicode(item.sku[:100]))
-            self.define_valor_de_atributo_de_item(checkout, "descricao", indice, unicode(item.nome[:255]))
+            self.define_valor_de_atributo_de_item(checkout, "codigo", indice, self.formatador.trata_unicode_com_limite(item.sku, 100))
+            self.define_valor_de_atributo_de_item(checkout, "descricao", indice, self.formatador.trata_unicode_com_limite(item.nome, 255))
             self.define_valor_de_atributo_de_item(checkout, "qtde", indice, self.formatador.formata_decimal(item.quantidade, como_int=True))
             self.define_valor_de_atributo_de_item(checkout, "valor", indice, self.formatador.formata_decimal(item.preco_venda))
 

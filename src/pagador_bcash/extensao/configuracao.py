@@ -41,9 +41,11 @@ PARCELAS.insert(0, (24, "Todas"))
 class Formulario(FormularioBase):
     usuario = CampoFormulario("usuario", "Seu email no Bcash", requerido=True, tamanho_max=128, ordem=1)
     token = CampoFormulario("token", "Sua chave acesso", requerido=True, tamanho_max=128, ordem=2)
-    mostrar_parcelamento = CampoFormulario("mostrar_parcelamento", "Marque para mostrar o parcelamento na listagem e na página do produto.", tipo=TipoDeCampo.boleano, requerido=False, ordem=3)
-    maximo_parcelas = CampoFormulario("maximo_parcelas", "Máximo de parcelas", tipo=TipoDeCampo.escolha, requerido=False, ordem=4, texto_ajuda=u"Quantidade máxima de parcelas para esta forma de pagamento.", opcoes=PARCELAS)
-    parcelas_sem_juros = CampoFormulario("parcelas_sem_juros", "Parcelas sem juros", tipo=TipoDeCampo.escolha, requerido=False, ordem=5, texto_ajuda=u"Número de parcelas sem juros para esta forma de pagamento.", opcoes=PARCELAS)
+    valor_minimo_aceitado = CampoFormulario("valor_minimo_aceitado", u"Valor mínimo", requerido=False, decimais=2, ordem=3, tipo=TipoDeCampo.decimal, texto_ajuda=u"Informe o valor mínimo para exibir esta forma de pagamento.")
+    valor_minimo_parcela = CampoFormulario("valor_minimo_parcela", u"Valor mínimo da parcela", requerido=False, decimais=2, ordem=4, tipo=TipoDeCampo.decimal)
+    mostrar_parcelamento = CampoFormulario("mostrar_parcelamento", "Marque para mostrar o parcelamento na listagem e na página do produto.", tipo=TipoDeCampo.boleano, requerido=False, ordem=5)
+    maximo_parcelas = CampoFormulario("maximo_parcelas", "Máximo de parcelas", tipo=TipoDeCampo.escolha, requerido=False, ordem=6, texto_ajuda=u"Quantidade máxima de parcelas para esta forma de pagamento.", opcoes=PARCELAS)
+    parcelas_sem_juros = CampoFormulario("parcelas_sem_juros", "Parcelas sem juros", tipo=TipoDeCampo.escolha, requerido=False, ordem=7, texto_ajuda=u"Número de parcelas sem juros para esta forma de pagamento.", opcoes=PARCELAS)
 
 
 class MeioPagamentoEnvio(object):
@@ -71,6 +73,8 @@ class MeioPagamentoSelecao(SelecaoBase):
     selecao = Script(tipo=TipoScript.html, nome="selecao", caminho_arquivo=caminho_do_arquivo_de_template("selecao.html"), eh_template=True)
 
     def to_dict(self):
+        if not self.aceita_pagamento_no_valor():
+            return []
         return [
             self.selecao.to_dict()
         ]

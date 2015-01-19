@@ -70,16 +70,16 @@ class Malote(entidades.Malote):
         self.redirect = 'true',
         self.redirect_time = 30,
         self.frete = self.formatador.formata_decimal(self.valor_envio),
-        self.tipo_frete = self.pedido.pedido_envio.envio.nome,
-        self.nome = self.formatador.trata_unicode_com_limite((self.pedido.endereco_entrega.nome or self.pedido.cliente.email)),
-        self.telefone = self.pedido.telefone_principal,
-        self.celular = self.pedido.telefone_celular,
-        self.cep = self.pedido.endereco_entrega.cep,
-        self.endereco = u'{}, {}'.format(self.pedido.endereco_entrega.endereco, self.pedido.endereco_entrega.numero),
-        self.complemento = self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.complemento),
-        self.bairro = self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.bairro),
-        self.cidade = self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.cidade),
-        self.estado = self.pedido.endereco_entrega.estado,
+        self.tipo_frete = pedido.pedido_envio.envio.nome,
+        self.nome = self.formatador.trata_unicode_com_limite((pedido.endereco_entrega.nome or pedido.cliente.email)),
+        self.telefone = pedido.telefone_principal,
+        self.celular = pedido.telefone_celular,
+        self.cep = pedido.endereco_entrega.cep,
+        self.endereco = u'{}, {}'.format(pedido.endereco_entrega.endereco, pedido.endereco_entrega.numero),
+        self.complemento = self.formatador.trata_unicode_com_limite(pedido.endereco_entrega.complemento),
+        self.bairro = self.formatador.trata_unicode_com_limite(pedido.endereco_entrega.bairro),
+        self.cidade = self.formatador.trata_unicode_com_limite(pedido.endereco_entrega.cidade),
+        self.estado = pedido.endereco_entrega.estado,
         self.desconto = self.formatador.formata_decimal(self.valor_desconto)
 
         if pedido.endereco_entrega.tipo == 'PF':
@@ -89,7 +89,7 @@ class Malote(entidades.Malote):
             if pedido.cliente.data_nascimento:
                 self.data_nascimento = '{}/{}/{}'.format(pedido.cliente.data_nascimento.day, pedido.cliente.data_nascimento.month, pedido.cliente.data_nascimento.year)
         elif pedido.endereco_entrega.tipo == 'PJ':
-            self.cliente_razao_social = self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.razao_social)
+            self.cliente_razao_social = self.formatador.trata_unicode_com_limite(pedido.endereco_entrega.razao_social)
             self.cliente_cnpj = pedido.endereco_entrega.cnpj
 
         for indice, item in enumerate(pedido.itens.all()):

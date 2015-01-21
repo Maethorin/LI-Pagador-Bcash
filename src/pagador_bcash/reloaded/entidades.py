@@ -5,6 +5,11 @@ from hashlib import md5
 from pagador.reloaded import entidades
 
 
+class Entrega(entidades.Entrega):
+    def __init__(self, numero_pedido, id_loja, meio_de_pagamento):
+        super(Entrega, self).__init__(numero_pedido, id_loja, meio_de_pagamento)
+
+
 class Malote(entidades.Malote):
     def __init__(self):
         super(Malote, self).__init__()

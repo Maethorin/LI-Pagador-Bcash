@@ -1,5 +1,5 @@
 {% load filters %}
-{% if modo == "padrao-novo" %}
+{% if modo == "estrutura/v0" %}
     <li class="pagamento lista-item" id="pagamento_2" data-id="2" data-nome="Bcash!">
         <div class="radio_button">
             <input class="forma_pagamento" type="radio" value="2" name="forma_pagamento" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} />
@@ -15,7 +15,7 @@
                 <input type="radio" name="forma_pagamento" id="{% if modo == 'modal' %}modal-{% endif %}radio-bcash" {% if forma_pagamento == pagamento.id|stringformat:"s" %}checked="checked"{% endif %} value="2">
             </span>
             <span class="forma-conteiner text-right">
-                <img src="{{ STATIC_URL }}novo-template/img/bandeiras/bcash.png" title="Pague com Bcash!" alt="Pague com Bcash!" />
+                <img src="{{ STATIC_URL }}loja/estrutura/v1/img/bandeiras/bcash.png" title="Pague com Bcash!" alt="Pague com Bcash!" />
             </span>
         </label>
         <div id="{% if modo == 'modal' %}modal-{% endif %}escolha-bcash" class="collapse">

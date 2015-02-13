@@ -3,6 +3,7 @@ import unittest
 from datetime import datetime
 from decimal import Decimal
 from mock import MagicMock, patch
+import mock
 
 from pagador_bcash.reloaded import entidades
 from pagador.reloaded import entidades as pagador_entidades
@@ -215,3 +216,24 @@ class GerandoMalote(unittest.TestCase):
             'produto_qtde_3': 1,
             'produto_valor_3': '12.30',
         })
+
+
+CAMPOS = ['ativo', 'usuario', 'token', 'valor_minimo_aceitado', 'valor_minimo_parcela', 'mostrar_parcelamento', 'maximo_parcelas', 'parcelas_sem_juros']
+
+
+class ConfiguracaoMeioPagamento(unittest.TestCase):
+    def test_deve_ter_os_campos_especificos_na_classe(self):
+        entidades.ConfiguracaoMeioPagamento._campos.should.be.equal(CAMPOS)
+
+    def test_deve_ter_codigo_gateway(self):
+        entidades.ConfiguracaoMeioPagamento._codigo_gateway.should.be.equal(2)
+
+    @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_do_gateway', autospec=True)
+    def test_deve_preencher_do_gateway_na_inicializacao(self, preencher_mock):
+        configuracao = entidades.ConfiguracaoMeioPagamento(234)
+        preencher_mock.assert_called_with(configuracao, 2, CAMPOS)
+
+    @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_do_gateway', autospec=True)
+    def test_deve_definir_formulario_na_inicializacao(self, preencher_mock):
+        configuracao = entidades.ConfiguracaoMeioPagamento(234)
+        configuracao.formulario.should.be.a('pagador_bcash.reloaded.cadastro.FormularioBcash')

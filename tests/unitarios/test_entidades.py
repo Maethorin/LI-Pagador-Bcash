@@ -218,9 +218,9 @@ class GerandoMalote(unittest.TestCase):
         })
 
 
-class ConfiguracaoMeioPagamento(unittest.TestCase):
+class BcashConfiguracaoMeioPagamento(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(ConfiguracaoMeioPagamento, self).__init__(*args, **kwargs)
+        super(BcashConfiguracaoMeioPagamento, self).__init__(*args, **kwargs)
         self.campos = ['ativo', 'usuario', 'token', 'valor_minimo_aceitado', 'valor_minimo_parcela', 'mostrar_parcelamento', 'maximo_parcelas', 'parcelas_sem_juros']
         self.codigo_gateway = 2
 

@@ -10,7 +10,7 @@ extensibilidade.SETTINGS.EXTENSOES = {
 }
 
 
-class ConfiguracaoMeioDePagamentoDaLoja(TestBase):
+class BcashConfiguracaoMeioDePagamentoDaLoja(TestBase):
     url = '/loja/8/meio-pagamento/pagamento_digital/configurar'
 
     @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento')

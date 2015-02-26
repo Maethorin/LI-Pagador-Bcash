@@ -53,10 +53,10 @@ class Malote(entidades.Malote):
         tudo = '{}{}'.format(urlencode(codificado), token)
         self.hash = md5(tudo).hexdigest()
 
-    def monta_conteudo(self, pedido, dados=None):
-        self.id_plataforma = dados['id_plataforma']
+    def monta_conteudo(self, pedido, parametros_contrato=None, dados=None):
+        self.id_plataforma = parametros_contrato.id_plataforma
         self.tipo_integracao = 'PAD'
-        self.email_loja = self.configuracao['usuario']
+        self.email_loja = self.configuracao.usuario
         self.id_pedido = pedido.numero
         self.email = pedido.cliente['email']
         self.url_retorno = '{}/success/?next_url={}&referencia={}'.format(dados["url_retorno"], dados["next_url"], pedido.numero)

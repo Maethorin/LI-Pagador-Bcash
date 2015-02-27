@@ -19,89 +19,93 @@ class GerandoMalote(unittest.TestCase):
         return item
 
     def test_gera_hash_sem_unicode(self):
-        valores_formulario = {'chave2': 'valor2', 'chave1': 1}
-        configuracao = {'token': 'TOKEN'}
+        configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
         with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
-            malote = entidades.Malote()
-            malote._gerar_hash(valores_formulario, configuracao).should.be.equal('HASH')
-            md5_mock.assert_called_with('chave1=1&chave2=valor2TOKEN')
+            malote = entidades.Malote(configuracao)
+            malote._gerar_hash()
+            malote.hash.should.be.equal('HASH')
+            md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=NoneTOKEN')
 
     def test_gera_hash_com_especial(self):
-        valores_formulario = {'chave2': 'colocação', 'chave1': 1}
-        configuracao = {'token': 'TOKEN'}
+        configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
         with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
-            malote = entidades.Malote()
-            malote._gerar_hash(valores_formulario, configuracao).should.be.equal('HASH')
-            md5_mock.assert_called_with('chave1=1&chave2=coloca%C3%A7%C3%A3oTOKEN')
+            malote = entidades.Malote(configuracao)
+            malote.bairro = 'São Gonçalo'
+            malote._gerar_hash()
+            md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=NoneTOKEN')
 
     def test_gera_hash_com_unicode(self):
-        valores_formulario = {'chave2': u'colocação', 'chave1': 1}
-        configuracao = {'token': 'TOKEN'}
+        configuracao = mock.MagicMock(token='TOKEN')
+        pagador_entidades.Pedido._repositorio = MagicMock()
         pagador_entidades.Pedido._repositorio = MagicMock()
         with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
-            malote = entidades.Malote()
-            malote._gerar_hash(valores_formulario, configuracao).should.be.equal('HASH')
-            md5_mock.assert_called_with('chave1=1&chave2=coloca%C3%A7%C3%A3oTOKEN')
+            malote = entidades.Malote(configuracao)
+            malote.bairro = u'São Gonçalo'
+            malote._gerar_hash()
+            md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=NoneTOKEN')
 
     def test_gera_hash_sem_token(self):
-        valores_formulario = {'chave2': u'colocação', 'chave1': 1}
-        configuracao = {'token': None}
+        configuracao = mock.MagicMock(token=None)
         pagador_entidades.Pedido._repositorio = MagicMock()
         with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
-            malote = entidades.Malote()
-            malote._gerar_hash(valores_formulario, configuracao).should.be.equal('HASH')
-            md5_mock.assert_called_with('chave1=1&chave2=coloca%C3%A7%C3%A3o')
+            malote = entidades.Malote(configuracao)
+            malote._gerar_hash()
+            md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=None')
 
-    def test_monta_conteudo_com_pessoa_fisica(self):
-        pedido_repositorio = MagicMock()
-        pedido_repositorio.cliente.email = 'cliente@teste.com'
-        pedido_repositorio.cliente.sexo = 'M'
-        pedido_repositorio.cliente.data_nascimento = datetime(1970, 2, 23)
-        pedido_repositorio.valor_envio = Decimal('15.60')
-        pedido_repositorio.valor_desconto = Decimal('10.60')
-        pedido_repositorio.valor_subtotal = Decimal('136.40')
-        pedido_repositorio.pedido_envio.envio.nome = 'ENVIO'
-        pedido_repositorio.endereco_entrega.tipo = 'PF'
-        pedido_repositorio.endereco_entrega.nome = 'Cliente Teste'
-        pedido_repositorio.endereco_entrega.razao_social = None
-        pedido_repositorio.endereco_entrega.cpf = '11122233344'
-        pedido_repositorio.endereco_entrega.cnpj = None
-        pedido_repositorio.endereco_entrega.rg = '11222333-4'
-        pedido_repositorio.endereco_entrega.endereco = 'Rua Teste'
-        pedido_repositorio.endereco_entrega.numero = '33'
-        pedido_repositorio.endereco_entrega.complemento = None
-        pedido_repositorio.endereco_entrega.bairro = 'Bairro'
-        pedido_repositorio.endereco_entrega.cidade = 'Cidade'
-        pedido_repositorio.endereco_entrega.estado = 'TT'
-        pedido_repositorio.endereco_entrega.cep = '22123000'
-        pedido_repositorio.telefone_principal = '2122224444'
-        pedido_repositorio.telefone_celular = '21999987777'
-        pedido_repositorio.items = [self._cria_item(1), self._cria_item(2), self._cria_item(3)]
-        pagador_entidades.Pedido._repositorio = MagicMock()
-        pagador_entidades.Pedido._repositorio.obter_unico.return_value = pedido_repositorio
+    @mock.patch('pagador.reloaded.repositorios.PedidoRepositorio')
+    @mock.patch('pagador_bcash.reloaded.entidades.settings')
+    def test_monta_conteudo_com_pessoa_fisica(self, settings_mock, pedido_repo_mock):
+        dados_repositorio = {
+            'numero': 23,
+            'loja_id': 234,
+            'cliente': {'email': 'cliente@teste.com', 'sexo': 'M', 'data_nascimento': datetime(1970, 2, 23)},
+            'valor_envio': 15.60,
+            'valor_desconto': 10.60,
+            'valor_subtotal': 136.40,
+            'forma_envio': 'ENVIO',
+            'endereco_entrega': {
+                'tipo': 'PF',
+                'nome': 'Cliente Teste',
+                'razao_social': None,
+                'cpf': '11122233344', 'rg': '11222333-4',
+                'cnpj': None,
+                'cep': '22123000',
+                'endereco': 'Rua Teste', 'numero': '33', 'complemento': None,
+                'bairro': 'Bairro', 'cidade': 'Cidade', 'estado': 'TT'
+            },
+            'telefone_principal': '2122224444',
+            'telefone_celular': '21999987777',
+            'itens_no_pedido': [
+                {'sku': 'SKU_1', 'nome': 'Item Nome 1', 'quantidade': 1.00, 'preco_venda': 12.30},
+                {'sku': 'SKU_2', 'nome': 'Item Nome 2', 'quantidade': 1.00, 'preco_venda': 12.30},
+                {'sku': 'SKU_3', 'nome': 'Item Nome 3', 'quantidade': 1.00, 'preco_venda': 12.30},
+            ]
+        }
         pedido = pagador_entidades.Pedido(23, 234)
-        malote = entidades.Malote()
-        configuracao = {
+        pedido.preencher_com(dados_repositorio)
+        configuracao = mock.MagicMock(**{
             'usuario': 'bcash_user',
-            'token': 'TOKEN'
+            'token': 'TOKEN',
+            'loja_id': 234
+        })
+        parametros = {'id_plataforma': 'id_plataforma'}
+        settings_mock.BCASH_NOTIFICATION_URL = 'http://bcash.url_retorno.com/{}'
+        dados = {
+            'next_url': 'http://urlde.redirect.com'
         }
-        dados_complementares = {
-            'url_retorno': 'http:\\bcash.url_retorno.com',
-            'id_plataforma': 'id_plataforma',
-            'next_url': 'http:\\urlde.redirect.com'
-        }
-        malote._gerar_hash = MagicMock(return_value='HASH')
-        malote.monta_conteudo(pedido, configuracao, dados_complementares).should.be.equal({
+        malote = entidades.Malote(configuracao)
+        malote.monta_conteudo(pedido, parametros, dados)
+        malote.to_dict().should.be.equal({
             'bairro': 'Bairro',
             'celular': '21999987777',
             'cep': '22123000',
@@ -115,7 +119,7 @@ class GerandoMalote(unittest.TestCase):
             'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': 'HASH',
+            'hash': '2e2906f60c6667f84c31e245ad7a5c88',
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'Cliente Teste',
@@ -126,61 +130,66 @@ class GerandoMalote(unittest.TestCase):
             'telefone': '2122224444',
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
-            'url_retorno': 'http:\\bcash.url_retorno.com/success/?next_url=http:\\urlde.redirect.com&referencia=23',
+            'url_retorno': 'http://bcash.url_retorno.com/234/success/?next_url=http://urlde.redirect.com&referencia=23',
             'produto_codigo_1': 'SKU_1',
-            'produto_descricao_1': 'Nome Item 1',
+            'produto_descricao_1': 'Item Nome 1',
             'produto_valor_1': '12.30',
             'produto_qtde_1': 1,
             'produto_codigo_2': 'SKU_2',
-            'produto_descricao_2': 'Nome Item 2',
+            'produto_descricao_2': 'Item Nome 2',
             'produto_qtde_2': 1,
             'produto_valor_2': '12.30',
             'produto_codigo_3': 'SKU_3',
-            'produto_descricao_3': 'Nome Item 3',
+            'produto_descricao_3': 'Item Nome 3',
             'produto_qtde_3': 1,
             'produto_valor_3': '12.30',
         })
 
-    def test_monta_conteudo_com_pessoa_juridica(self):
-        pedido_repositorio = MagicMock()
-        pedido_repositorio.cliente.email = 'cliente@teste.com'
-        pedido_repositorio.cliente.sexo = None
-        pedido_repositorio.cliente.data_nascimento = None
-        pedido_repositorio.valor_envio = Decimal('15.60')
-        pedido_repositorio.valor_desconto = Decimal('10.60')
-        pedido_repositorio.valor_subtotal = Decimal('136.40')
-        pedido_repositorio.pedido_envio.envio.nome = 'ENVIO'
-        pedido_repositorio.endereco_entrega.tipo = 'PJ'
-        pedido_repositorio.endereco_entrega.razao_social = u'Razão Social Teste S/A'
-        pedido_repositorio.endereco_entrega.nome = None
-        pedido_repositorio.endereco_entrega.cpf = None
-        pedido_repositorio.endereco_entrega.cnpj = '12345678901234'
-        pedido_repositorio.endereco_entrega.rg = None
-        pedido_repositorio.endereco_entrega.endereco = 'Rua Teste'
-        pedido_repositorio.endereco_entrega.numero = '33'
-        pedido_repositorio.endereco_entrega.complemento = 'Empresa'
-        pedido_repositorio.endereco_entrega.bairro = 'Bairro'
-        pedido_repositorio.endereco_entrega.cidade = 'Cidade'
-        pedido_repositorio.endereco_entrega.estado = 'TT'
-        pedido_repositorio.endereco_entrega.cep = '22123000'
-        pedido_repositorio.telefone_principal = '2122224444'
-        pedido_repositorio.telefone_celular = '21999987777'
-        pedido_repositorio.items = [self._cria_item(1), self._cria_item(2), self._cria_item(3)]
-        pagador_entidades.Pedido._repositorio = MagicMock()
-        pagador_entidades.Pedido._repositorio.obter_unico.return_value = pedido_repositorio
+    @mock.patch('pagador.reloaded.repositorios.PedidoRepositorio')
+    @mock.patch('pagador_bcash.reloaded.entidades.settings')
+    def test_monta_conteudo_com_pessoa_juridica(self, settings_mock, pedido_repo_mock):
+        dados_repositorio = {
+            'numero': 23,
+            'loja_id': 234,
+            'cliente': {'email': 'cliente@teste.com', 'sexo': 'M', 'data_nascimento': datetime(1970, 2, 23)},
+            'valor_envio': 15.60,
+            'valor_desconto': 10.60,
+            'valor_subtotal': 136.40,
+            'forma_envio': 'ENVIO',
+            'endereco_entrega': {
+                'tipo': 'PJ',
+                'nome': None,
+                'razao_social': u'Razão Social Teste S/A',
+                'cpf': None,
+                'rg': None,
+                'cnpj': '12345678901234',
+                'cep': '22123000',
+                'endereco': 'Rua Teste', 'numero': '33', 'complemento': 'Empresa',
+                'bairro': 'Bairro', 'cidade': 'Cidade', 'estado': 'TT'
+            },
+            'telefone_principal': '2122224444',
+            'telefone_celular': '21999987777',
+            'itens_no_pedido': [
+                {'sku': 'SKU_1', 'nome': 'Item Nome 1', 'quantidade': 1.00, 'preco_venda': 12.30},
+                {'sku': 'SKU_2', 'nome': 'Item Nome 2', 'quantidade': 1.00, 'preco_venda': 12.30},
+                {'sku': 'SKU_3', 'nome': 'Item Nome 3', 'quantidade': 1.00, 'preco_venda': 12.30},
+            ]
+        }
         pedido = pagador_entidades.Pedido(23, 234)
-        malote = entidades.Malote()
-        configuracao = {
+        pedido.preencher_com(dados_repositorio)
+        configuracao = mock.MagicMock(**{
             'usuario': 'bcash_user',
-            'token': 'TOKEN'
+            'token': 'TOKEN',
+            'loja_id': 234
+        })
+        parametros = {'id_plataforma': 'id_plataforma'}
+        settings_mock.BCASH_NOTIFICATION_URL = 'http://bcash.url_retorno.com/{}'
+        dados = {
+            'next_url': 'http://urlde.redirect.com'
         }
-        dados_complementares = {
-            'url_retorno': 'http:\\bcash.url_retorno.com',
-            'id_plataforma': 'id_plataforma',
-            'next_url': 'http:\\urlde.redirect.com'
-        }
-        malote._gerar_hash = MagicMock(return_value='HASH')
-        malote.monta_conteudo(pedido, configuracao, dados_complementares).should.be.equal({
+        malote = entidades.Malote(configuracao)
+        malote.monta_conteudo(pedido, parametros, dados)
+        malote.to_dict().should.be.equal({
             'bairro': 'Bairro',
             'celular': '21999987777',
             'cep': '22123000',
@@ -192,7 +201,7 @@ class GerandoMalote(unittest.TestCase):
             'email_loja': 'bcash_user', 'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': 'HASH',
+            'hash': '020eb665289a41fbf79f12b18f52d062',
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'cliente@teste.com',
@@ -202,17 +211,17 @@ class GerandoMalote(unittest.TestCase):
             'telefone': '2122224444',
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
-            'url_retorno': 'http:\\bcash.url_retorno.com/success/?next_url=http:\\urlde.redirect.com&referencia=23',
+            'url_retorno': 'http://bcash.url_retorno.com/234/success/?next_url=http://urlde.redirect.com&referencia=23',
             'produto_codigo_1': 'SKU_1',
-            'produto_descricao_1': 'Nome Item 1',
+            'produto_descricao_1': 'Item Nome 1',
             'produto_valor_1': '12.30',
             'produto_qtde_1': 1,
             'produto_codigo_2': 'SKU_2',
-            'produto_descricao_2': 'Nome Item 2',
+            'produto_descricao_2': 'Item Nome 2',
             'produto_qtde_2': 1,
             'produto_valor_2': '12.30',
             'produto_codigo_3': 'SKU_3',
-            'produto_descricao_3': 'Nome Item 3',
+            'produto_descricao_3': 'Item Nome 3',
             'produto_qtde_3': 1,
             'produto_valor_3': '12.30',
         })

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from urllib import urlencode
 from hashlib import md5
+from pagador import settings
 
 from pagador.reloaded import entidades
 from pagador_bcash.reloaded import cadastro
@@ -29,7 +30,6 @@ class Malote(entidades.Malote):
         self.cidade = None
         self.estado = None
         self.desconto = None
-        self.hash = None
 
     def _cria_item_venda(self, indice, codigo, descricao, qtde, valor):
         indice += 1
@@ -54,19 +54,19 @@ class Malote(entidades.Malote):
         self.hash = md5(tudo).hexdigest()
 
     def monta_conteudo(self, pedido, parametros_contrato=None, dados=None):
-        self.id_plataforma = parametros_contrato.id_plataforma
+        self.id_plataforma = parametros_contrato['id_plataforma']
         self.tipo_integracao = 'PAD'
         self.email_loja = self.configuracao.usuario
         self.id_pedido = pedido.numero
         self.email = pedido.cliente['email']
-        self.url_retorno = '{}/success/?next_url={}&referencia={}'.format(dados["url_retorno"], dados["next_url"], pedido.numero)
+        self.url_retorno = '{}/success/?next_url={}&referencia={}'.format(settings.BCASH_NOTIFICATION_URL.format(self.configuracao.loja_id), dados["next_url"], pedido.numero)
         self.redirect = 'true'
         self.redirect_time = 30
         self.frete = self.formatador.formata_decimal(self.valor_envio(pedido))
         self.tipo_frete = pedido.forma_envio
         self.nome = self.formatador.trata_unicode_com_limite((pedido.endereco_entrega['nome'] or pedido.cliente['email']))
-        self.telefone = pedido.telefone_principal
-        self.celular = pedido.telefone_celular
+        self.telefone = pedido.telefone_principal or ''
+        self.celular = pedido.telefone_celular or ''
         self.cep = pedido.endereco_entrega['cep']
         self.endereco = u'{}, {}'.format(pedido.endereco_entrega['endereco'], pedido.endereco_entrega['numero'])
         self.complemento = self.formatador.trata_unicode_com_limite(pedido.endereco_entrega['complemento'])
@@ -84,7 +84,7 @@ class Malote(entidades.Malote):
             setattr(self, 'cliente_razao_social', self.formatador.trata_unicode_com_limite(pedido.endereco_entrega['razao_social']))
             setattr(self, 'cliente_cnpj', pedido.endereco_entrega['cnpj'])
 
-        for indice, item in enumerate(pedido.items):
+        for indice, item in enumerate(pedido.itens):
             self._cria_item_venda(
                 indice,
                 codigo=self.formatador.trata_unicode_com_limite(item.sku, 100),
@@ -92,7 +92,6 @@ class Malote(entidades.Malote):
                 qtde=self.formatador.formata_decimal(item.quantidade, como_int=True),
                 valor=self.formatador.formata_decimal(item.preco_venda)
             )
-
         self._gerar_hash()
 
 

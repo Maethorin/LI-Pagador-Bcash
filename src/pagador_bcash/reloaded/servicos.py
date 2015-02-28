@@ -10,8 +10,8 @@ class Resultado(object):
 
 
 class EntregaPagamento(servicos.EntregaPagamento):
-    def __init__(self, loja_id):
-        super(EntregaPagamento, self).__init__(loja_id)
+    def __init__(self, loja_id, plano_indice=1):
+        super(EntregaPagamento, self).__init__(loja_id, plano_indice)
         self.tem_malote = True
 
     def enviar_pagamento(self, tentativa=1):

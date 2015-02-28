@@ -4,7 +4,7 @@ import mock
 from pagador_bcash.reloaded import servicos
 
 
-class EntregandoPagamento(unittest.TestCase):
+class BcashEntregandoPagamento(unittest.TestCase):
     def test_resultado_no_padrao(self):
         resultado = servicos.Resultado({'chave': 'valor'})
         resultado.sucesso.should.be.truthy

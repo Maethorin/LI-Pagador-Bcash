@@ -1,33 +1,28 @@
 language: python
 python:
-  - '2.7'
-
+- '2.7'
 install:
-  - pip install -e .
-  - pip install coveralls
-  - pip install sure
-  - pip install py-inspector
-
+- pip install -e .
+- pip install coveralls
+- pip install sure
+- pip install py-inspector
 script:
-  - rm -rf .coverage
-  - coverage2 run --branch `which nosetests` -w tests -w unitarios -w integracao
-  - coverage2 report -m --fail-under=70
-
+- rm -rf .coverage
+- coverage2 run --branch `which nosetests` -w tests -w unitarios -w integracao
+- coverage2 report -m --fail-under=70
 after_success:
-  - coveralls
-
+- coveralls
 deploy:
   provider: pypi
   user: lojaintegrada
   password:
-    secure:
+    secure: DHWUdMQwNbBBpxAhZ2DgAQW11Ks0nJ3SqgiBmbFdgAWemIVH7Hq6+WLlmZ5HhIMHy0ueSugKB+1UN9Tnta9Ts9u29Vn/xKMbpXZnIk/iL5ESfsoTZSGxTJaQtDhloyuQ8ZPS5JuMgSn4SKFSXY+rK4gXiYlWhx1hqNTKpsDSP5g=
   on:
     tags: true
     repo: lojaintegrada/LI-Pagador-Bcash
     all_branches: true
-
 notifications:
   email:
     recipients:
-      - contato@awsli.com.br
-      - marcio.duarte@lojaintegrada.com.br
+    - contato@awsli.com.br
+    - marcio.duarte@lojaintegrada.com.br

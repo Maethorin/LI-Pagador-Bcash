@@ -1,0 +1,33 @@
+language: python
+python:
+  - '2.7'
+
+install:
+  - pip install -e .
+  - pip install coveralls
+  - pip install sure
+  - pip install py-inspector
+
+script:
+  - rm -rf .coverage
+  - coverage2 run --branch `which nosetests` -w tests -w unitarios -w integracao
+  - coverage2 report -m --fail-under=70
+
+after_success:
+  - coveralls
+
+deploy:
+  provider: pypi
+  user: lojaintegrada
+  password:
+    secure:
+  on:
+    tags: true
+    repo: lojaintegrada/LI-Pagador
+    all_branches: true
+
+notifications:
+  email:
+    recipients:
+      - contato@awsli.com.br
+      - marcio.duarte@lojaintegrada.com.br

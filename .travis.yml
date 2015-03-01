@@ -23,7 +23,7 @@ deploy:
     secure:
   on:
     tags: true
-    repo: lojaintegrada/LI-Pagador
+    repo: lojaintegrada/LI-Pagador-Bcash
     all_branches: true
 
 notifications:

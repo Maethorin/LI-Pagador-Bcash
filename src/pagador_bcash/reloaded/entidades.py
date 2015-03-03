@@ -61,7 +61,7 @@ class Malote(entidades.Malote):
         self.email_loja = self.configuracao.usuario
         self.id_pedido = pedido.numero
         self.email = pedido.cliente['email']
-        self.url_retorno = '{}/success/?next_url={}&referencia={}'.format(settings.BCASH_NOTIFICATION_URL.format(self.configuracao.loja_id), dados["next_url"], pedido.numero)
+        self.url_retorno = '{}/retorno/?next_url={}&referencia={}'.format(settings.BCASH_NOTIFICATION_URL.format(self.configuracao.loja_id), dados["next_url"], pedido.numero)
         self.redirect = 'true'
         self.redirect_time = 30
         self.frete = self.formatador.formata_decimal(self.valor_envio(pedido))

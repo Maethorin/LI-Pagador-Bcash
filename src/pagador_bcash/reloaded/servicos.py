@@ -8,6 +8,6 @@ class EntregaPagamento(servicos.EntregaPagamento):
         super(EntregaPagamento, self).__init__(loja_id, plano_indice)
         self.tem_malote = True
 
-    def processa_dados_de_pagamento(self):
+    def processa_dados_pagamento(self):
         dados = self.malote.to_dict()
         self.resultado = {"dados": dados}

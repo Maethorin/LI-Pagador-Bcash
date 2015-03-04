@@ -15,8 +15,8 @@ class EnviarPedido(Enviar):
         self.exige_autenticacao = False
         self.processa_resposta = True
         self.url = None
-        self.deve_gravar_dados_de_pagamento = False
-        self.formato_de_envio = FormatoDeEnvio.json
+        self.deve_gravar_dados_pagamento = False
+        self.formato_envio = FormatoDeEnvio.json
         for item in range(0, len(self.pedido.itens.all())):
             Checkout.cria_item_venda(item)
 
@@ -24,7 +24,7 @@ class EnviarPedido(Enviar):
     def chaves_credenciamento(self):
         return ["usuario", "token"]
 
-    def gerar_dados_de_envio(self, passo=None):
+    def gerar_dados_envio(self, passo=None):
         parametros = ParametrosBcash("bcash", id=self.pedido.conta_id)
         checkout = Checkout(
             id_plataforma=parametros.id_plataforma,
@@ -50,37 +50,37 @@ class EnviarPedido(Enviar):
         )
 
         if self.pedido.endereco_entrega.tipo == 'PF':
-            checkout.define_valor_de_atributo("cpf", {"cpf": self.pedido.endereco_entrega.cpf})
-            checkout.define_valor_de_atributo("rg", {"rg": self.pedido.endereco_entrega.rg})
-            checkout.define_valor_de_atributo("sexo", {"sexo": self.pedido.cliente.sexo})
+            checkout.define_valor_atributo("cpf", {"cpf": self.pedido.endereco_entrega.cpf})
+            checkout.define_valor_atributo("rg", {"rg": self.pedido.endereco_entrega.rg})
+            checkout.define_valor_atributo("sexo", {"sexo": self.pedido.cliente.sexo})
             if self.pedido.cliente.data_nascimento:
                 data_nascimento = '{}/{}/{}'.format(self.pedido.cliente.data_nascimento.day, self.pedido.cliente.data_nascimento.month, self.pedido.cliente.data_nascimento.year)
-                checkout.define_valor_de_atributo("data_nascimento", {"data_nascimento": data_nascimento})
+                checkout.define_valor_atributo("data_nascimento", {"data_nascimento": data_nascimento})
         elif self.pedido.endereco_entrega.tipo == 'PJ':
-            checkout.define_valor_de_atributo("cliente_razao_social", {"cliente_razao_social": self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.razao_social)})
-            checkout.define_valor_de_atributo("cliente_cnpj", {"cliente_cnpj": self.pedido.endereco_entrega.cnpj})
+            checkout.define_valor_atributo("cliente_razao_social", {"cliente_razao_social": self.formatador.trata_unicode_com_limite(self.pedido.endereco_entrega.razao_social)})
+            checkout.define_valor_atributo("cliente_cnpj", {"cliente_cnpj": self.pedido.endereco_entrega.cnpj})
 
         for indice, item in enumerate(self.pedido.itens.all()):
-            self.define_valor_de_atributo_de_item(checkout, "codigo", indice, self.formatador.trata_unicode_com_limite(item.sku, 100))
-            self.define_valor_de_atributo_de_item(checkout, "descricao", indice, self.formatador.trata_unicode_com_limite(item.nome, 255))
-            self.define_valor_de_atributo_de_item(checkout, "qtde", indice, self.formatador.formata_decimal(item.quantidade, como_int=True))
-            self.define_valor_de_atributo_de_item(checkout, "valor", indice, self.formatador.formata_decimal(item.preco_venda))
+            self.define_valor_atributo_item(checkout, "codigo", indice, self.formatador.trata_unicode_com_limite(item.sku, 100))
+            self.define_valor_atributo_item(checkout, "descricao", indice, self.formatador.trata_unicode_com_limite(item.nome, 255))
+            self.define_valor_atributo_item(checkout, "qtde", indice, self.formatador.formata_decimal(item.quantidade, como_int=True))
+            self.define_valor_atributo_item(checkout, "valor", indice, self.formatador.formata_decimal(item.preco_venda))
 
         hasheado = self.gerar_hash(checkout.to_dict())
-        checkout.define_valor_de_atributo("hash", {"hash": hasheado})
+        checkout.define_valor_atributo("hash", {"hash": hasheado})
         return checkout.to_dict()
 
-    def define_valor_de_atributo_de_item(self, checkout, atributo, indice, valor):
+    def define_valor_atributo_item(self, checkout, atributo, indice, valor):
         indice += 1
         nome = "produto_{}_{}".format(atributo, indice)
         atributo = "produto_{}_{}".format(atributo, indice)
-        checkout.define_valor_de_atributo(nome, {atributo.lower(): valor})
+        checkout.define_valor_atributo(nome, {atributo.lower(): valor})
 
-    def obter_situacao_do_pedido(self, status_requisicao):
+    def obter_situacao_pedido(self, status_requisicao):
         return None
 
     def processar_resposta(self, resposta):
-        return {"content": {"dados": self.gerar_dados_de_envio()}, "status": 200}
+        return {"content": {"dados": self.gerar_dados_envio()}, "status": 200}
 
     def gerar_hash(self, valores_formulario):
         em_ordem = [(k, valores_formulario[k]) for k in sorted(valores_formulario.keys())]

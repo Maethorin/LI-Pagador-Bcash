@@ -51,7 +51,7 @@ class FormularioBcash(unittest.TestCase):
         self.formulario.maximo_parcelas.tipo.should.be.equal(cadastro.cadastro.TipoDeCampo.escolha)
         self.formulario.maximo_parcelas.opcoes.should.be.equal(self.formulario._PARCELAS)
 
-    def test_deve_ter_quantidade_certa_de_parcelas(self):
+    def test_deve_ter_quantidade_certa_parcelas(self):
         len(self.formulario._PARCELAS).should.be.equal(24)
 
     def test_deve_ter_parcelas_sem_juros(self):

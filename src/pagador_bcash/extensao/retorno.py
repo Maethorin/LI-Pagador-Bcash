@@ -20,7 +20,7 @@ class Registro(RegistroBase):
         self.exige_autenticacao = False
         self.processa_resposta = True
         self.tipo = tipo
-        self.formato_de_envio = FormatoDeEnvio.json
+        self.formato_envio = FormatoDeEnvio.json
 
     @property
     def url(self):
@@ -41,7 +41,7 @@ class Registro(RegistroBase):
         return None
 
     @property
-    def deve_gravar_dados_de_pagamento(self):
+    def deve_gravar_dados_pagamento(self):
         return True
 
     def __getattr__(self, name):
@@ -53,7 +53,7 @@ class Registro(RegistroBase):
         return object.__getattribute__(self, name)
 
     @property
-    def situacao_do_pedido(self):
+    def situacao_pedido(self):
         if self.situacao_aguardando:
             return SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO
         if self.situacao_paga:
@@ -64,23 +64,23 @@ class Registro(RegistroBase):
 
     @property
     def alterar_situacao(self):
-        return self.situacao_do_pedido is not None
+        return self.situacao_pedido is not None
 
     @property
-    def retorno_de_requisicao(self):
+    def retorno_requisicao(self):
         return self.tipo == "success"
 
     @property
-    def retorno_de_notificacao(self):
+    def retorno_notificacao(self):
         return self.tipo == "retorno"
 
     @property
-    def obter_dados_do_gateway(self):
+    def obter_dados_gateway(self):
         return False
 
     @property
     def redireciona_para(self):
-        if self.retorno_de_requisicao:
+        if self.retorno_requisicao:
             tipo = self.tipo
             if self.situacao_aguardando:
                 tipo = 'pending'

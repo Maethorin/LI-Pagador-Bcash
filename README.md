@@ -20,3 +20,9 @@ LI-Pagador-Bcash
 
 [![Build Status](https://travis-ci.org/lojaintegrada/LI-Pagador-Bcash.svg?branch=pagador-reloaded)](https://travis-ci.org/lojaintegrada/LI-Pagador-Bcash)
 [![Coverage Status](https://coveralls.io/repos/lojaintegrada/LI-Pagador-Bcash/badge.svg?branch=pagador-reloaded)](https://coveralls.io/r/lojaintegrada/LI-Pagador-Bcash?branch=pagador-reloaded)
+
+
+Dados de teste:
+
+CPF: 248.716.617-76
+TEL: (21) 2455-8955

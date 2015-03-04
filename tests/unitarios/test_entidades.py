@@ -69,9 +69,9 @@ class GerandoMalote(unittest.TestCase):
             'numero': 23,
             'loja_id': 234,
             'cliente': {'email': 'cliente@teste.com', 'sexo': 'M', 'data_nascimento': datetime(1970, 2, 23)},
-            'valor_envio': 15.60,
-            'valor_desconto': 10.60,
-            'valor_subtotal': 136.40,
+            '_valor_envio': 15.60,
+            '_valor_desconto': 10.60,
+            '_valor_subtotal': 136.40,
             'forma_envio': 'ENVIO',
             'endereco_entrega': {
                 'tipo': 'PF',
@@ -91,8 +91,8 @@ class GerandoMalote(unittest.TestCase):
                 {'sku': 'SKU_3', 'nome': 'Item Nome 3', 'quantidade': 1.00, 'preco_venda': 12.30},
             ]
         }
+        pedido_repo_mock.return_value.obter_com_numero.return_value = dados_repositorio
         pedido = pagador_entidades.Pedido(23, 234)
-        pedido.preencher_com(dados_repositorio)
         configuracao = mock.MagicMock(**{
             'usuario': 'bcash_user',
             'token': 'TOKEN',
@@ -119,7 +119,7 @@ class GerandoMalote(unittest.TestCase):
             'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': '363fc2ed1a8910900d3070e1e79c86d0',
+            'hash': '73e988f7047e38001a6dcc25e49b1d32',
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'Cliente Teste',
@@ -130,7 +130,7 @@ class GerandoMalote(unittest.TestCase):
             'telefone': '2122224444',
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
-            'url_retorno': 'http://bcash.url_retorno.com/234/success/?next_url=http://urlde.redirect.com&referencia=23',
+            'url_retorno': 'http://bcash.url_retorno.com/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
             'produto_codigo_1': 'SKU_1',
             'produto_descricao_1': 'Item Nome 1',
             'produto_valor_1': '12.30',
@@ -152,9 +152,9 @@ class GerandoMalote(unittest.TestCase):
             'numero': 23,
             'loja_id': 234,
             'cliente': {'email': 'cliente@teste.com', 'sexo': 'M', 'data_nascimento': datetime(1970, 2, 23)},
-            'valor_envio': 15.60,
-            'valor_desconto': 10.60,
-            'valor_subtotal': 136.40,
+            '_valor_envio': 15.60,
+            '_valor_desconto': 10.60,
+            '_valor_subtotal': 136.40,
             'forma_envio': 'ENVIO',
             'endereco_entrega': {
                 'tipo': 'PJ',
@@ -201,7 +201,7 @@ class GerandoMalote(unittest.TestCase):
             'email_loja': 'bcash_user', 'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': '1f9268e85a5784933c5d683f678a9ce4',
+            'hash': '65b550a45363ecc7e1ddd30c2c182906',
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'cliente@teste.com',
@@ -211,7 +211,7 @@ class GerandoMalote(unittest.TestCase):
             'telefone': '2122224444',
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
-            'url_retorno': 'http://bcash.url_retorno.com/234/success/?next_url=http://urlde.redirect.com&referencia=23',
+            'url_retorno': 'http://bcash.url_retorno.com/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
             'produto_codigo_1': 'SKU_1',
             'produto_descricao_1': 'Item Nome 1',
             'produto_valor_1': '12.30',

@@ -61,10 +61,10 @@ class Malote(entidades.Malote):
         self.email_loja = self.configuracao.usuario
         self.id_pedido = pedido.numero
         self.email = pedido.cliente['email']
-        self.url_retorno = '{}/retorno/?next_url={}&referencia={}'.format(settings.BCASH_NOTIFICATION_URL.format(self.configuracao.loja_id), dados["next_url"], pedido.numero)
+        self.url_retorno = '{}/resultado?next_url={}&referencia={}'.format(settings.BCASH_NOTIFICATION_URL.format(self.configuracao.loja_id), dados["next_url"], pedido.numero)
         self.redirect = 'true'
         self.redirect_time = 30
-        self.frete = self.formatador.formata_decimal(self.valor_envio(pedido))
+        self.frete = self.formatador.formata_decimal(pedido.valor_envio)
         self.tipo_frete = pedido.forma_envio
         self.nome = self.formatador.trata_unicode_com_limite((pedido.endereco_entrega['nome'] or pedido.cliente['email']))
         self.telefone = pedido.telefone_principal or ''
@@ -75,7 +75,7 @@ class Malote(entidades.Malote):
         self.bairro = self.formatador.trata_unicode_com_limite(pedido.endereco_entrega['bairro'])
         self.cidade = self.formatador.trata_unicode_com_limite(pedido.endereco_entrega['cidade'])
         self.estado = pedido.endereco_entrega['estado']
-        self.desconto = self.formatador.formata_decimal(self.valor_desconto(pedido))
+        self.desconto = self.formatador.formata_decimal(pedido.valor_desconto)
         if pedido.endereco_entrega['tipo'] == 'PF':
             setattr(self, 'cpf', pedido.endereco_entrega['cpf'])
             setattr(self, 'rg', pedido.endereco_entrega['rg'])

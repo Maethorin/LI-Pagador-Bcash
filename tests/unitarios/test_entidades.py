@@ -27,7 +27,7 @@ class GerandoMalote(unittest.TestCase):
             malote = entidades.Malote(configuracao)
             malote._gerar_hash()
             malote.hash.should.be.equal('HASH')
-            md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=NoneTOKEN')
+            md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=NoneTOKEN')
 
     def test_gera_hash_com_especial(self):
         configuracao = mock.MagicMock(token='TOKEN')
@@ -38,7 +38,7 @@ class GerandoMalote(unittest.TestCase):
             malote = entidades.Malote(configuracao)
             malote.bairro = 'São Gonçalo'
             malote._gerar_hash()
-            md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=NoneTOKEN')
+            md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=NoneTOKEN')
 
     def test_gera_hash_com_unicode(self):
         configuracao = mock.MagicMock(token='TOKEN')
@@ -50,7 +50,7 @@ class GerandoMalote(unittest.TestCase):
             malote = entidades.Malote(configuracao)
             malote.bairro = u'São Gonçalo'
             malote._gerar_hash()
-            md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=NoneTOKEN')
+            md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=NoneTOKEN')
 
     def test_gera_hash_sem_token(self):
         configuracao = mock.MagicMock(token=None)
@@ -60,7 +60,7 @@ class GerandoMalote(unittest.TestCase):
             hexdig.hexdigest.return_value = 'HASH'
             malote = entidades.Malote(configuracao)
             malote._gerar_hash()
-            md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_retorno=None')
+            md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=None')
 
     @mock.patch('pagador.reloaded.repositorios.PedidoRepositorio')
     @mock.patch('pagador_bcash.reloaded.entidades.settings')
@@ -119,7 +119,7 @@ class GerandoMalote(unittest.TestCase):
             'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': '73e988f7047e38001a6dcc25e49b1d32',
+            'hash': '8e240f0a05ad5dea629160072840a575',
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'Cliente Teste',
@@ -130,6 +130,7 @@ class GerandoMalote(unittest.TestCase):
             'telefone': '2122224444',
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
+            'url_aviso': 'http://bcash.url_retorno.com/234/notificacao?referencia=http://urlde.redirect.com',
             'url_retorno': 'http://bcash.url_retorno.com/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
             'produto_codigo_1': 'SKU_1',
             'produto_descricao_1': 'Item Nome 1',
@@ -201,7 +202,7 @@ class GerandoMalote(unittest.TestCase):
             'email_loja': 'bcash_user', 'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': '65b550a45363ecc7e1ddd30c2c182906',
+            'hash': '2264de4eb21f85904164c8c819cd8e6e',
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'cliente@teste.com',
@@ -212,6 +213,7 @@ class GerandoMalote(unittest.TestCase):
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
             'url_retorno': 'http://bcash.url_retorno.com/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
+            'url_aviso': 'http://bcash.url_retorno.com/234/notificacao?referencia=http://urlde.redirect.com',
             'produto_codigo_1': 'SKU_1',
             'produto_descricao_1': 'Item Nome 1',
             'produto_valor_1': '12.30',

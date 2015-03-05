@@ -1,7 +1,7 @@
 //{% load filters %}
 var url = '';
 var $counter = null;
-var segundos = 5;
+var segundos = 3;
 var dados = null;
 
 function post() {
@@ -39,7 +39,7 @@ $(function() {
                     dados = data.content.dados;
                     console.log(dados);
                     iniciaContador();
-                    setTimeout('post();', 5000);
+                    setTimeout('post();', 3000);
                 }
                 else if (data.status == 404) {
                     var fatal = false;

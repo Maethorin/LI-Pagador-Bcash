@@ -14,7 +14,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
         self.resultado = {"dados": dados}
 
 
-class SituacoesDePagamento(object):
+class SituacoesDePagamento(servicos.SituacoesDePagamento):
     DE_PARA = {
         'Em Andamento': servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO,
         'Aprovada': servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO,
@@ -26,10 +26,6 @@ class SituacoesDePagamento(object):
         '1': servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO,
         '2': servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO,
     }
-
-    @classmethod
-    def do_tipo(cls, tipo):
-        return cls.DE_PARA.get(tipo, None)
 
 
 class RegistraResultado(servicos.RegistraResultado):

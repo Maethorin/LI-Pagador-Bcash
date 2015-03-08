@@ -31,8 +31,6 @@ class SituacoesDePagamento(servicos.SituacoesDePagamento):
 class RegistraResultado(servicos.RegistraResultado):
     def __init__(self, loja_id, dados=None):
         super(RegistraResultado, self).__init__(loja_id, dados)
-        self.conexao = self.obter_conexao()
-        self.resposta_bcash = None
         self.redirect_para = dados.get('next_url', None)
 
     def monta_dados_pagamento(self):
@@ -46,8 +44,6 @@ class RegistraResultado(servicos.RegistraResultado):
 class RegistraNotificacao(servicos.RegistraResultado):
     def __init__(self, loja_id, dados=None):
         super(RegistraNotificacao, self).__init__(loja_id, dados)
-        self.conexao = self.obter_conexao(formato_envio=requisicao.Formato.querystring, formato_resposta=requisicao.Formato.xml)
-        self.resposta_bcash = None
 
     def monta_dados_pagamento(self):
         self.pedido_numero = self.dados["pedido"]

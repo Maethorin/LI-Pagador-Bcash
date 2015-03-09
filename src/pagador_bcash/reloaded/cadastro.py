@@ -6,7 +6,7 @@ from li_common.padroes import cadastro
 class FormularioBcash(cadastro.Formulario):
     _PARCELAS = [(x, x) for x in range(1, 24)]
     _PARCELAS.insert(0, (24, 'Todas'))
-    ativo = cadastro.CampoFormulario('ativo', 'Pagamento ativo?', requerido=True, tipo=cadastro.TipoDeCampo.boleano, ordem=1)
+    ativo = cadastro.CampoFormulario('ativo', 'Pagamento ativo?', tipo=cadastro.TipoDeCampo.boleano, ordem=1)
     usuario = cadastro.CampoFormulario('usuario', 'Seu email no Bcash', requerido=True, tamanho_max=128, ordem=2)
     token = cadastro.CampoFormulario('token', 'Sua chave acesso', requerido=True, tamanho_max=128, ordem=3)
     valor_minimo_aceitado = cadastro.CampoFormulario('valor_minimo_aceitado', u'Valor mínimo', requerido=False, decimais=2, ordem=4, tipo=cadastro.TipoDeCampo.decimal, texto_ajuda=u'Informe o valor mínimo para exibir esta forma de pagamento.')

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
-from pagador_bcash.reloaded import cadastro
+
+from pagador_bcash import cadastro
 
 
 class FormularioBcash(unittest.TestCase):

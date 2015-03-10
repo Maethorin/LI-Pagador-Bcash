@@ -6,7 +6,7 @@ from decimal import Decimal
 from mock import MagicMock, patch
 import mock
 
-from pagador_bcash.reloaded import entidades
+from pagador_bcash import entidades
 from pagador import entidades as pagador_entidades
 
 
@@ -22,7 +22,7 @@ class GerandoMalote(unittest.TestCase):
     def test_gera_hash_sem_unicode(self):
         configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
-        with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
+        with patch('pagador_bcash.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
             malote = entidades.Malote(configuracao)
@@ -33,7 +33,7 @@ class GerandoMalote(unittest.TestCase):
     def test_gera_hash_com_especial(self):
         configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
-        with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
+        with patch('pagador_bcash.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
             malote = entidades.Malote(configuracao)
@@ -45,7 +45,7 @@ class GerandoMalote(unittest.TestCase):
         configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
         pagador_entidades.Pedido._repositorio = MagicMock()
-        with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
+        with patch('pagador_bcash.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
             malote = entidades.Malote(configuracao)
@@ -56,7 +56,7 @@ class GerandoMalote(unittest.TestCase):
     def test_gera_hash_sem_token(self):
         configuracao = mock.MagicMock(token=None)
         pagador_entidades.Pedido._repositorio = MagicMock()
-        with patch('pagador_bcash.reloaded.entidades.md5') as md5_mock:
+        with patch('pagador_bcash.entidades.md5') as md5_mock:
             hexdig = md5_mock.return_value
             hexdig.hexdigest.return_value = 'HASH'
             malote = entidades.Malote(configuracao)
@@ -64,7 +64,7 @@ class GerandoMalote(unittest.TestCase):
             md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=None')
 
     @mock.patch('pagador.repositorios.PedidoRepositorio')
-    @mock.patch('pagador_bcash.reloaded.entidades.settings')
+    @mock.patch('pagador_bcash.entidades.settings')
     def test_monta_conteudo_com_pessoa_fisica(self, settings_mock, pedido_repo_mock):
         dados_repositorio = {
             'numero': 23,
@@ -148,7 +148,7 @@ class GerandoMalote(unittest.TestCase):
         })
 
     @mock.patch('pagador.repositorios.PedidoRepositorio')
-    @mock.patch('pagador_bcash.reloaded.entidades.settings')
+    @mock.patch('pagador_bcash.entidades.settings')
     def test_monta_conteudo_com_pessoa_juridica(self, settings_mock, pedido_repo_mock):
         dados_repositorio = {
             'numero': 23,
@@ -242,17 +242,17 @@ class BcashConfiguracaoMeioPagamento(unittest.TestCase):
     def test_deve_ter_codigo_gateway(self):
         entidades.ConfiguracaoMeioPagamento._codigo_gateway.should.be.equal(self.codigo_gateway)
 
-    @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_bcash.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_preencher_gateway_na_inicializacao(self, preencher_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         preencher_mock.assert_called_with(configuracao, self.codigo_gateway, self.campos)
 
-    @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_bcash.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_definir_formulario_na_inicializacao(self, preencher_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
-        configuracao.formulario.should.be.a('pagador_bcash.reloaded.cadastro.FormularioBcash')
+        configuracao.formulario.should.be.a('pagador_bcash.cadastro.FormularioBcash')
 
-    @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
+    @mock.patch('pagador_bcash.entidades.ConfiguracaoMeioPagamento.preencher_gateway', autospec=True)
     def test_deve_ser_aplicacao(self, preencher_mock):
         configuracao = entidades.ConfiguracaoMeioPagamento(234)
         configuracao.eh_aplicacao.should.be.falsy

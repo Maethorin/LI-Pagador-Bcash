@@ -6,14 +6,14 @@ from li_common.padroes import extensibilidade
 from tests.base import TestBase
 
 extensibilidade.SETTINGS.EXTENSOES = {
-    'pagamento_digital': 'pagador_bcash.reloaded'
+    'pagamento_digital': 'pagador_bcash'
 }
 
 
 class BcashConfiguracaoMeioDePagamentoDaLoja(TestBase):
     url = '/loja/8/meio-pagamento/pagamento_digital/configurar'
 
-    @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento')
+    @mock.patch('pagador_bcash.entidades.ConfiguracaoMeioPagamento')
     def test_deve_obter_dados_bcash(self, configuracao_mock):
         configuracao = mock.MagicMock()
         configuracao_mock.return_value = configuracao
@@ -23,7 +23,7 @@ class BcashConfiguracaoMeioDePagamentoDaLoja(TestBase):
         response.status_code.should.be.equal(200)
         configuracao_mock.assert_called_with(loja_id=8, codigo_pagamento='pagamento_digital')
 
-    @mock.patch('pagador_bcash.reloaded.entidades.ConfiguracaoMeioPagamento')
+    @mock.patch('pagador_bcash.entidades.ConfiguracaoMeioPagamento')
     def test_deve_grava_dados_bcash(self, configuracao_mock):
         configuracao = mock.MagicMock()
         configuracao_mock.return_value = configuracao

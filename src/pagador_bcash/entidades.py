@@ -3,7 +3,7 @@ from urllib import urlencode
 from hashlib import md5
 
 from pagador import settings, entidades
-from pagador_bcash.reloaded import cadastro
+from pagador_bcash import cadastro
 
 
 CODIGO_GATEWAY = 2

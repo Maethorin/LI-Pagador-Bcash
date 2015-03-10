@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest
+
 import mock
-from pagador_bcash.reloaded import servicos
+
+from pagador_bcash import servicos
 
 
 class BcashEntregandoPagamento(unittest.TestCase):

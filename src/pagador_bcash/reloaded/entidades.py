@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from urllib import urlencode
 from hashlib import md5
-from pagador import settings
 
-from pagador.reloaded import entidades
+from pagador import settings, entidades
 from pagador_bcash.reloaded import cadastro
+
 
 CODIGO_GATEWAY = 2
 

@@ -2,11 +2,12 @@
 import unittest
 from datetime import datetime
 from decimal import Decimal
+
 from mock import MagicMock, patch
 import mock
 
 from pagador_bcash.reloaded import entidades
-from pagador.reloaded import entidades as pagador_entidades
+from pagador import entidades as pagador_entidades
 
 
 class GerandoMalote(unittest.TestCase):
@@ -62,7 +63,7 @@ class GerandoMalote(unittest.TestCase):
             malote._gerar_hash()
             md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=None')
 
-    @mock.patch('pagador.reloaded.repositorios.PedidoRepositorio')
+    @mock.patch('pagador.repositorios.PedidoRepositorio')
     @mock.patch('pagador_bcash.reloaded.entidades.settings')
     def test_monta_conteudo_com_pessoa_fisica(self, settings_mock, pedido_repo_mock):
         dados_repositorio = {
@@ -146,7 +147,7 @@ class GerandoMalote(unittest.TestCase):
             'produto_valor_3': '12.30',
         })
 
-    @mock.patch('pagador.reloaded.repositorios.PedidoRepositorio')
+    @mock.patch('pagador.repositorios.PedidoRepositorio')
     @mock.patch('pagador_bcash.reloaded.entidades.settings')
     def test_monta_conteudo_com_pessoa_juridica(self, settings_mock, pedido_repo_mock):
         dados_repositorio = {

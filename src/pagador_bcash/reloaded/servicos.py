@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from li_common.comunicacao import requisicao
 
-from pagador.reloaded import servicos
+from pagador import servicos
 
 
 class EntregaPagamento(servicos.EntregaPagamento):

@@ -20,7 +20,7 @@ class SituacoesDePagamento(servicos.SituacoesDePagamento):
         'Disputa': servicos.SituacaoPedido.SITUACAO_PAGTO_EM_DISPUTA,
         'Devolvida': servicos.SituacaoPedido.SITUACAO_PAGTO_DEVOLVIDO,
         'Cancelada': servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO,
-        'Chargebcak': servicos.SituacaoPedido.SITUACAO_PAGTO_CHARGEBACK,
+        'Chargeback': servicos.SituacaoPedido.SITUACAO_PAGTO_CHARGEBACK,
         '0': servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO,
         '1': servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO,
         '2': servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO,
@@ -46,7 +46,7 @@ class RegistraNotificacao(servicos.RegistraResultado):
 
     def monta_dados_pagamento(self):
         self.pedido_numero = self.dados["pedido"]
-        self.dados_pagamento['identificador_id'] = self.dados['transacao_id']
+        self.dados_pagamento['identificador_id'] = self.dados['id_transacao']
         self.dados_pagamento['transacao_id'] = self.dados['id_transacao']
         self.situacao_pedido = SituacoesDePagamento.do_tipo(self.dados['status'])
         self.resultado = {'resultado': 'OK'}

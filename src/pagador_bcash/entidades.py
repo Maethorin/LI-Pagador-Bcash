@@ -46,8 +46,6 @@ class Malote(entidades.Malote):
         em_ordem = [(k, valores_formulario[k]) for k in sorted(valores_formulario.keys())]
         codificado = []
         for k, v in em_ordem:
-            if isinstance(v, unicode):
-                v = v.encode('utf-8')
             codificado.append((k, v))
         if self.configuracao.token:
             token = self.configuracao.token.strip()

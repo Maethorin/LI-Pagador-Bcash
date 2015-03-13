@@ -10,7 +10,14 @@ from pagador_bcash import entidades
 from pagador import entidades as pagador_entidades
 
 
+def gerar_hash_mock(self=None):
+    if self:
+        self.hash = 'HAAAAASHHHHHHHHHH'
+    return 'HAAAAASHHHHHHHHHH'
+
+
 class GerandoMalote(unittest.TestCase):
+
     def _cria_item(self, indice):
         item = MagicMock()
         item.sku = 'SKU_{}'.format(indice)
@@ -19,7 +26,7 @@ class GerandoMalote(unittest.TestCase):
         item.preco_venda = Decimal('12.30')
         return item
 
-    def test_gera_hash_sem_unicode(self):
+    def test_gerar_hash_sem_unicode(self):
         configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
         with patch('pagador_bcash.entidades.md5') as md5_mock:
@@ -30,7 +37,7 @@ class GerandoMalote(unittest.TestCase):
             malote.hash.should.be.equal('HASH')
             md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=NoneTOKEN')
 
-    def test_gera_hash_com_especial(self):
+    def test_gerar_hash_com_especial(self):
         configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
         with patch('pagador_bcash.entidades.md5') as md5_mock:
@@ -41,7 +48,7 @@ class GerandoMalote(unittest.TestCase):
             malote._gerar_hash()
             md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=NoneTOKEN')
 
-    def test_gera_hash_com_unicode(self):
+    def test_gerar_hash_com_unicode(self):
         configuracao = mock.MagicMock(token='TOKEN')
         pagador_entidades.Pedido._repositorio = MagicMock()
         pagador_entidades.Pedido._repositorio = MagicMock()
@@ -53,7 +60,7 @@ class GerandoMalote(unittest.TestCase):
             malote._gerar_hash()
             md5_mock.assert_called_with('bairro=S%C3%A3o+Gon%C3%A7alo&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=NoneTOKEN')
 
-    def test_gera_hash_sem_token(self):
+    def test_gerar_hash_sem_token(self):
         configuracao = mock.MagicMock(token=None)
         pagador_entidades.Pedido._repositorio = MagicMock()
         with patch('pagador_bcash.entidades.md5') as md5_mock:
@@ -63,6 +70,7 @@ class GerandoMalote(unittest.TestCase):
             malote._gerar_hash()
             md5_mock.assert_called_with('bairro=None&celular=None&cep=None&cidade=None&complemento=None&desconto=None&email=None&email_loja=None&endereco=None&estado=None&frete=None&id_pedido=None&id_plataforma=None&nome=None&redirect=None&redirect_time=None&telefone=None&tipo_frete=None&tipo_integracao=None&url_aviso=None&url_retorno=None')
 
+    @mock.patch('pagador_bcash.entidades.Malote._gerar_hash', gerar_hash_mock)
     @mock.patch('pagador.repositorios.PedidoRepositorio')
     @mock.patch('pagador_bcash.entidades.settings')
     def test_monta_conteudo_com_pessoa_fisica(self, settings_mock, pedido_repo_mock):
@@ -120,7 +128,7 @@ class GerandoMalote(unittest.TestCase):
             'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': '8e240f0a05ad5dea629160072840a575',
+            'hash': gerar_hash_mock(),
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'Cliente Teste',
@@ -147,9 +155,10 @@ class GerandoMalote(unittest.TestCase):
             'produto_valor_3': '12.30',
         })
 
-    @mock.patch('pagador.repositorios.PedidoRepositorio')
+    @mock.patch('pagador_bcash.entidades.Malote._gerar_hash', gerar_hash_mock)
+    @mock.patch('pagador.repositorios.PedidoRepositorio', mock.MagicMock())
     @mock.patch('pagador_bcash.entidades.settings')
-    def test_monta_conteudo_com_pessoa_juridica(self, settings_mock, pedido_repo_mock):
+    def test_monta_conteudo_com_pessoa_juridica(self, settings_mock):
         dados_repositorio = {
             'numero': 23,
             'loja_id': 234,
@@ -203,7 +212,7 @@ class GerandoMalote(unittest.TestCase):
             'email_loja': 'bcash_user', 'endereco': u'Rua Teste, 33',
             'estado': 'TT',
             'frete': '15.60',
-            'hash': '2264de4eb21f85904164c8c819cd8e6e',
+            'hash': gerar_hash_mock(),
             'id_pedido': 23,
             'id_plataforma': 'id_plataforma',
             'nome': 'cliente@teste.com',

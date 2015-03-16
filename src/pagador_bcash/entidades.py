@@ -105,3 +105,4 @@ class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
         super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
         self.preencher_gateway(self._codigo_gateway, self._campos)
         self.formulario = cadastro.FormularioBcash()
+        self.url_gateway = 'https://www.pagamentodigital.com.br/checkout/pay/'

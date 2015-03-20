@@ -33,7 +33,11 @@ def read(fname):
 
 setup(
     name='li-pagador-bcash',
+<<<<<<< HEAD
     version='1.0.8',
+=======
+    version='2.0.3',
+>>>>>>> pagador-reloaded
     url='https://github.com/lojaintegrada/LI-Pagador-Bcash',
     license='MIT',
     description='Meio de pagamento usando o Bcash (http://www.bcash.com.br/)',

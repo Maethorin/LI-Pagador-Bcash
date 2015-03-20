@@ -1,0 +1,33 @@
+language: python
+python:
+- '2.7'
+install:
+- pip install -e .
+- pip install coveralls
+- pip install sure
+- pip install py-inspector
+script:
+- rm -rf .coverage
+- make test
+after_success:
+- coveralls
+deploy:
+  provider: pypi
+  user: lojaintegrada
+  password:
+    secure: DHWUdMQwNbBBpxAhZ2DgAQW11Ks0nJ3SqgiBmbFdgAWemIVH7Hq6+WLlmZ5HhIMHy0ueSugKB+1UN9Tnta9Ts9u29Vn/xKMbpXZnIk/iL5ESfsoTZSGxTJaQtDhloyuQ8ZPS5JuMgSn4SKFSXY+rK4gXiYlWhx1hqNTKpsDSP5g=
+  on:
+    tags: true
+    repo: lojaintegrada/LI-Pagador-Bcash
+    all_branches: true
+notifications:
+  email:
+    recipients:
+    - contato@awsli.com.br
+    - marcio.duarte@lojaintegrada.com.br
+  hipchat:
+    rooms:
+      secure: FSM+XPB6TJx9RcphfPLAPVXlCknXMVMxOoM6fgGTftS2sFc6kTUTIoU+oAC1iGGhjGgbTmoD5QXPVCRKn99svA6teamYnunroo0XompsxbnfPs8zIvzXPeLDP91yarcgmvZFCtUfeOj02Dl8FQzlW2HLFU6tMac3AfWVRMgVCXM=
+    template:
+      - '%{result} - %{repository_name}#%{build_number} (%{branch} - %{commit} : %{author}) (<a href="%{build_url}">Detalhes</a>/<a href="%{compare_url}">Altera&ccedil;&otilde;es</a>)'
+    format: html

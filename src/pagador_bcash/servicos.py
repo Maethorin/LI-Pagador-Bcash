@@ -74,6 +74,6 @@ class RegistraNotificacao(servicos.RegistraResultado):
     def monta_dados_pagamento(self):
         self.pedido_numero = self.pedido_id
         self.dados_pagamento['identificador_id'] = self.transacao_id
-        self.dados_pagamento['transacao_id'] = self.dados['id_transacao']
+        self.dados_pagamento['transacao_id'] = self.transacao_id
         self.situacao_pedido = SituacoesDePagamento.do_tipo(self.status)
         self.resultado = {'resultado': 'OK'}

@@ -17,7 +17,7 @@ class SituacoesDePagamento(servicos.SituacoesDePagamento):
     DE_PARA = {
         'Aprovada': servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO,
         'Cancelada': servicos.SituacaoPedido.SITUACAO_PEDIDO_CANCELADO,
-        'Em Andamento': servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO,
+        'Em andamento': servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO,
         'Disputa': servicos.SituacaoPedido.SITUACAO_PAGTO_EM_DISPUTA,
         'Devolvida': servicos.SituacaoPedido.SITUACAO_PAGTO_DEVOLVIDO,
         'Chargeback': servicos.SituacaoPedido.SITUACAO_PAGTO_CHARGEBACK,

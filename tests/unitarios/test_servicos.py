@@ -21,7 +21,7 @@ class BcashEntregandoPagamento(unittest.TestCase):
 
 class BcashSituacoesPagamento(unittest.TestCase):
     def test_deve_retornar_aguadando_para_em_andamento(self):
-        servicos.SituacoesDePagamento.do_tipo('Em Andamento').should.be.equal(servicos.servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO)
+        servicos.SituacoesDePagamento.do_tipo('Em andamento').should.be.equal(servicos.servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO)
 
     def test_deve_retornar_aguadando_para_zero(self):
         servicos.SituacoesDePagamento.do_tipo('0').should.be.equal(servicos.servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO)

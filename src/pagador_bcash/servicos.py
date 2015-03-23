@@ -9,6 +9,8 @@ class EntregaPagamento(servicos.EntregaPagamento):
         self.tem_malote = True
 
     def processa_dados_pagamento(self):
+        if 'next_url' not in self.dados:
+            raise self.EnvioNaoRealizado(u'As configurações do seu navegador não permitiu o envio dos dados corretos. Por favor, verifique se o JavaScript está habilitado', self.loja_id, self.pedido.numero, dados_envio={}, erros=[u'next_url não está em dados.'])
         dados = self.malote.to_dict()
         self.resultado = {"dados": dados}
 

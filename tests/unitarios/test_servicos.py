@@ -12,11 +12,18 @@ class BcashEntregandoPagamento(unittest.TestCase):
         entrega.tem_malote.should.be.truthy
 
     def test_processa_pagamento(self):
-        entrega = servicos.EntregaPagamento(234)
+        entrega = servicos.EntregaPagamento(234, dados={'next_url', 'url-next'})
         entrega.malote = mock.MagicMock()
         entrega.malote.to_dict.return_value = 'dados'
         entrega.processa_dados_pagamento()
         entrega.resultado.should.be.equal({'dados': 'dados'})
+
+    def test_processa_pagamento_da_erro_sem_next_url(self):
+        entrega = servicos.EntregaPagamento(234, dados={})
+        entrega.pedido = mock.MagicMock(numero=123)
+        entrega.malote = mock.MagicMock()
+        entrega.malote.to_dict.return_value = 'dados'
+        entrega.processa_dados_pagamento.when.called_with().should.throw(entrega.EnvioNaoRealizado, u'Pedido 123 na Loja Id 234\nAs configurações do seu navegador não permitiu o envio dos dados corretos. Por favor, verifique se o JavaScript está habilitado:\n\tnext_url não está em dados.')
 
 
 class BcashSituacoesPagamento(unittest.TestCase):

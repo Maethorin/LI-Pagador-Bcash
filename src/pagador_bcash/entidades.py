@@ -99,10 +99,10 @@ class Malote(entidades.Malote):
 
 class ConfiguracaoMeioPagamento(entidades.ConfiguracaoMeioPagamento):
 
-    def __init__(self, loja_id, codigo_pagamento=None):
+    def __init__(self, loja_id, codigo_pagamento=None, eh_listagem=False):
         self.campos = ['ativo', 'usuario', 'token', 'valor_minimo_aceitado', 'valor_minimo_parcela', 'mostrar_parcelamento', 'maximo_parcelas', 'parcelas_sem_juros']
         self.codigo_gateway = CODIGO_GATEWAY
         self.eh_gateway = True
-        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento)
+        super(ConfiguracaoMeioPagamento, self).__init__(loja_id, codigo_pagamento, eh_listagem)
         self.formulario = cadastro.FormularioBcash()
         self.url_gateway = 'https://www.pagamentodigital.com.br/checkout/pay/'

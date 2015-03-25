@@ -39,10 +39,6 @@ class RegistraResultado(servicos.RegistraResultado):
         return self.dados.get('id_transacao', None) or self.dados.get('transacao_id', None) or self.dados['transacao']
 
     @property
-    def pedido_id(self):
-        return self.dados.get('id_pedido', None) or self.dados.get('pedido_id', None) or self.dados['pedido']
-
-    @property
     def status(self):
         return self.dados.get('cod_status', None) or self.dados.get('status', None)
 

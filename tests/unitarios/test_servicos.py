@@ -78,6 +78,11 @@ class BcashRegistrandoResultado(unittest.TestCase):
         registrador.monta_dados_pagamento()
         registrador.resultado.should.be.equal('sucesso')
 
+    def test_deve_retornar_resultado_pendente(self):
+        registrador = servicos.RegistraResultado(1234, {'next_url': 'url-next', 'referencia': 1234, 'cod_status': '0'})
+        registrador.monta_dados_pagamento()
+        registrador.resultado.should.be.equal('pendente')
+
 
 class BcashRegistrandoNotificacao(unittest.TestCase):
     def test_nao_deve_definir_redirect(self):

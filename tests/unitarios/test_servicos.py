@@ -23,7 +23,7 @@ class BcashEntregandoPagamento(unittest.TestCase):
         entrega.pedido = mock.MagicMock(numero=123)
         entrega.malote = mock.MagicMock()
         entrega.malote.to_dict.return_value = 'dados'
-        entrega.processa_dados_pagamento.when.called_with().should.throw(entrega.EnvioNaoRealizado, u'Pedido 123 na Loja Id 234\nAs configurações do seu navegador não permitiu o envio dos dados corretos. Por favor, verifique se o JavaScript está habilitado:\n\tnext_url não está em dados.')
+        entrega.processa_dados_pagamento.when.called_with().should.throw(entrega.EnvioNaoRealizado, u'As configurações do seu navegador não permitiu o envio dos dados corretos. Por favor, verifique se o JavaScript está habilitado')
 
 
 class BcashSituacoesPagamento(unittest.TestCase):

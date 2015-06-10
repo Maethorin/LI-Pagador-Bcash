@@ -78,7 +78,7 @@ class Malote(entidades.Malote):
         self.desconto = self.formatador.formata_decimal(pedido.valor_desconto)
         if pedido.endereco_entrega['tipo'] == 'PF':
             setattr(self, 'cpf', pedido.endereco_entrega['cpf'])
-            setattr(self, 'rg', pedido.endereco_entrega['rg'])
+            #setattr(self, 'rg', pedido.endereco_entrega['rg'])
             setattr(self, 'sexo', pedido.cliente['sexo'])
             if pedido.cliente['data_nascimento']:
                 setattr(self, 'data_nascimento', pedido.cliente['data_nascimento'].strftime('%d/%m/%Y'))

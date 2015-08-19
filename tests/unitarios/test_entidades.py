@@ -72,8 +72,7 @@ class GerandoMalote(unittest.TestCase):
 
     @mock.patch('pagador_bcash.entidades.Malote._gerar_hash', gerar_hash_mock)
     @mock.patch('pagador.repositorios.PedidoRepositorio')
-    @mock.patch('pagador_bcash.entidades.settings')
-    def test_monta_conteudo_com_pessoa_fisica(self, settings_mock, pedido_repo_mock):
+    def test_monta_conteudo_com_pessoa_fisica(self, pedido_repo_mock):
         dados_repositorio = {
             'numero': 23,
             'loja_id': 234,
@@ -108,7 +107,6 @@ class GerandoMalote(unittest.TestCase):
             'loja_id': 234
         })
         parametros = {'id_plataforma': 'id_plataforma'}
-        settings_mock.BCASH_NOTIFICATION_URL = 'http://bcash.url_retorno.com/{}'
         dados = {
             'next_url': 'http://urlde.redirect.com'
         }
@@ -138,8 +136,8 @@ class GerandoMalote(unittest.TestCase):
             'telefone': '2122224444',
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
-            'url_aviso': 'http://bcash.url_retorno.com/234/notificacao?referencia=23',
-            'url_retorno': 'http://bcash.url_retorno.com/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
+            'url_aviso': 'http://localhost:5000/pagador/meio-pagamento/bcash/retorno/234/notificacao?referencia=23',
+            'url_retorno': 'http://localhost:5000/pagador/meio-pagamento/bcash/retorno/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
             'produto_codigo_1': 'SKU_1',
             'produto_descricao_1': 'Item Nome 1',
             'produto_valor_1': '12.30',
@@ -156,8 +154,7 @@ class GerandoMalote(unittest.TestCase):
 
     @mock.patch('pagador_bcash.entidades.Malote._gerar_hash', gerar_hash_mock)
     @mock.patch('pagador.repositorios.PedidoRepositorio', mock.MagicMock())
-    @mock.patch('pagador_bcash.entidades.settings')
-    def test_monta_conteudo_com_pessoa_juridica(self, settings_mock):
+    def test_monta_conteudo_com_pessoa_juridica(self):
         dados_repositorio = {
             'numero': 23,
             'loja_id': 234,
@@ -193,7 +190,6 @@ class GerandoMalote(unittest.TestCase):
             'loja_id': 234
         })
         parametros = {'id_plataforma': 'id_plataforma'}
-        settings_mock.BCASH_NOTIFICATION_URL = 'http://bcash.url_retorno.com/{}'
         dados = {
             'next_url': 'http://urlde.redirect.com'
         }
@@ -221,8 +217,8 @@ class GerandoMalote(unittest.TestCase):
             'telefone': '2122224444',
             'tipo_frete': 'ENVIO',
             'tipo_integracao': 'PAD',
-            'url_retorno': 'http://bcash.url_retorno.com/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
-            'url_aviso': 'http://bcash.url_retorno.com/234/notificacao?referencia=23',
+            'url_retorno': 'http://localhost:5000/pagador/meio-pagamento/bcash/retorno/234/resultado?next_url=http://urlde.redirect.com&referencia=23',
+            'url_aviso': 'http://localhost:5000/pagador/meio-pagamento/bcash/retorno/234/notificacao?referencia=23',
             'produto_codigo_1': 'SKU_1',
             'produto_descricao_1': 'Item Nome 1',
             'produto_valor_1': '12.30',

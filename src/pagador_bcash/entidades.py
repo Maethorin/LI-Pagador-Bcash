@@ -79,7 +79,8 @@ class Malote(entidades.Malote):
         if pedido.endereco_entrega['tipo'] == 'PF':
             setattr(self, 'cpf', pedido.endereco_entrega['cpf'])
             #setattr(self, 'rg', pedido.endereco_entrega['rg'])
-            setattr(self, 'sexo', pedido.cliente['sexo'])
+            if pedido.cliente['sexo']:
+                setattr(self, 'sexo', pedido.cliente['sexo'])
             if pedido.cliente['data_nascimento']:
                 setattr(self, 'data_nascimento', pedido.cliente['data_nascimento'].strftime('%d/%m/%Y'))
         if pedido.endereco_entrega['tipo'] == 'PJ':

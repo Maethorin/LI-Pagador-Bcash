@@ -2,7 +2,7 @@
 from urllib import urlencode
 from hashlib import md5
 
-from pagador import settings, entidades
+from pagador import configuracoes, entidades
 from pagador_bcash import cadastro
 
 
@@ -60,8 +60,8 @@ class Malote(entidades.Malote):
         self.email_loja = self.configuracao.usuario
         self.id_pedido = pedido.numero
         self.email = pedido.cliente['email']
-        self.url_retorno = '{}/resultado?next_url={}&referencia={}'.format(settings.NOTIFICACAO_URL.format('bcash', self.configuracao.loja_id), dados["next_url"], pedido.numero)
-        self.url_aviso = '{}/notificacao?referencia={}'.format(settings.NOTIFICACAO_URL.format('bcash', self.configuracao.loja_id), pedido.numero)
+        self.url_retorno = '{}/resultado?next_url={}&referencia={}'.format(configuracoes.NOTIFICACAO_URL.format('bcash', self.configuracao.loja_id), dados["next_url"], pedido.numero)
+        self.url_aviso = '{}/notificacao?referencia={}'.format(configuracoes.NOTIFICACAO_URL.format('bcash', self.configuracao.loja_id), pedido.numero)
         self.redirect = 'true'
         self.redirect_time = 30
         self.frete = self.formatador.formata_decimal(pedido.valor_envio)

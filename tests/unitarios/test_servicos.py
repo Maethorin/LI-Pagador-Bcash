@@ -16,7 +16,7 @@ class BcashEntregandoPagamento(unittest.TestCase):
         entrega.malote = mock.MagicMock()
         entrega.malote.to_dict.return_value = 'dados'
         entrega.processa_dados_pagamento()
-        entrega.resultado.should.be.equal({'dados': 'dados'})
+        entrega.resultado.should.be.equal({'dados': 'dados', 'pago': False})
 
     def test_processa_pagamento_da_erro_sem_next_url(self):
         entrega = servicos.EntregaPagamento(234, dados={})
@@ -74,14 +74,14 @@ class BcashRegistrandoResultado(unittest.TestCase):
         registrador.situacao_pedido.should.be.equal(servicos.servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO)
 
     def test_deve_retornar_resultado_ok(self):
-        registrador = servicos.RegistraResultado(1234, {'next_url': 'url-next', 'referencia': 1234, 'id_transacao': 'transacao-id', 'cod_status': '0'})
+        registrador = servicos.RegistraResultado(1234, {'next_url': 'url-next', 'referencia': 1234, 'id_transacao': 'transacao-id', 'cod_status': '1'})
         registrador.monta_dados_pagamento()
-        registrador.resultado.should.be.equal('sucesso')
+        registrador.resultado.should.be.equal({'pago': True, 'resultado': 'sucesso'})
 
     def test_deve_retornar_resultado_pendente(self):
         registrador = servicos.RegistraResultado(1234, {'next_url': 'url-next', 'referencia': 1234, 'cod_status': '0'})
         registrador.monta_dados_pagamento()
-        registrador.resultado.should.be.equal('pendente')
+        registrador.resultado.should.be.equal({'pago': False, 'resultado': 'pendente'})
 
 
 class BcashRegistrandoNotificacao(unittest.TestCase):

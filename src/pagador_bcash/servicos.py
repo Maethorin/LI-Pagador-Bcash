@@ -12,7 +12,7 @@ class EntregaPagamento(servicos.EntregaPagamento):
         if 'next_url' not in self.dados:
             raise self.EnvioNaoRealizado(u'As configurações do seu navegador não permitiu o envio dos dados corretos. Por favor, verifique se o JavaScript está habilitado', self.loja_id, self.pedido.numero, dados_envio={}, erros=[u'next_url não está em dados.'])
         dados = self.malote.to_dict()
-        self.resultado = {"dados": dados}
+        self.resultado = {"dados": dados, 'pago': False}
 
 
 class SituacoesDePagamento(servicos.SituacoesDePagamento):
@@ -48,9 +48,9 @@ class RegistraResultado(servicos.RegistraResultado):
             self.dados_pagamento['identificador_id'] = self.transacao_id
             self.dados_pagamento['transacao_id'] = self.transacao_id
             self.situacao_pedido = SituacoesDePagamento.do_tipo(self.status)
-            self.resultado = 'sucesso'
+            self.resultado = {'resultado': 'sucesso', 'pago': self.situacao_pedido in [servicos.SituacaoPedido.SITUACAO_AGUARDANDO_PAGTO, servicos.SituacaoPedido.SITUACAO_PEDIDO_PAGO]}
         else:
-            self.resultado = 'pendente'
+            self.resultado = {'resultado': 'pendente', 'pago': False}
 
 
 class RegistraNotificacao(servicos.RegistraResultado):
